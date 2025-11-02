@@ -1,34 +1,86 @@
 <html>
-    <head>
-        <title>Sample Page</title>  
-        <style>
-            body {
-                font-family: Arial, sans-serif;
-                margin: 20px;
-            }
-            h1 {
-                color: navy;
-            }
-            h2 {
-                color: darkgreen;
-            }
-            h3 {
-                color: rgb(230, 51, 51);
-            }
-            p {
-                font-size: 14px;
-                line-height: 1.6;
-            }
-        </style>
-        </head>
-    <body>
-        <h1>Header 1  </h1>
-        <h2>Header 2</h2>
-         <h3>Header 3</h3>
-        <p>This is a sample paragraph to demonstrate HTML structure.</p>
 
-        <script>
-            console.log("Hello from JS hi world" + Date.now());
-        </script>
-    </body>
+<head>
+    <title>WeekOne shuai assignment</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            text-align: center;
+        }
+
+        h1 {
+            color: navy;
+        }
+
+        h2 {
+            color: darkgreen;
+        }
+
+        h3 {
+            color: rgb(230, 51, 51);
+        }
+
+        p {
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Welcome</h1>
+    <h2 style="color:wheat">The time now is</h2>
+
+    <h2>Local time</h2>
+    <h3 id="ClientNow"></h3>
+    <h2>China time</h2>
+    <h3 id="CnNow"></h3>
+    <h2>New York time</h2>
+    <h3 id="UsEastNow"></h3>
+    <h2>Los Angeles time</h2>
+    <h3 id="UsWestNow"></h3>
+
+
+
+    <p>Let's take a look at the time of the world!</p>
+
+    <script>
+        // 一个通用的渲染函数：给定 DOM id、时区、语言
+        function renderClock(id, timeZone, locale) {
+            const now = new Date();
+            const date = now.toLocaleDateString(locale, {
+                timeZone,
+                year: 'numeric', month: '2-digit', day: '2-digit',
+                weekday: 'long'
+            });
+            const time = now.toLocaleTimeString(locale, {
+                timeZone,
+                hour12: false,
+                hour: '2-digit', minute: '2-digit', second: '2-digit'
+            });
+            document.getElementById(id).textContent = `${date} ${time}`;
+        }
+
+        function tick() {
+            // 本地时间（跟随用户系统）
+            renderClock('ClientNow', Intl.DateTimeFormat().resolvedOptions().timeZone, navigator.language || 'zh-CN');
+
+            // 纽约
+            renderClock('UsEastNow', 'America/New_York', 'en-US');
+
+            // 中国（上海）
+            renderClock('CnNow', 'Asia/Shanghai', 'zh-CN');
+
+            //  “Los Angeles time”
+            renderClock('UsWestNow', 'America/Los_Angeles', 'en-US');
+        }
+
+        tick();                // 先渲染一次
+        setInterval(tick, 1000); // 每秒刷新
+    </script>
+
+</body>
+
 </html>
