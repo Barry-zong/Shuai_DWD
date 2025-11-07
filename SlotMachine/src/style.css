@@ -9,11 +9,17 @@ body,
 html {
   margin: 0;
   min-height: 100%;
+  height: 100%; /* fallback for % heights */
+  overflow-y: hidden; /* remove right-side vertical scrollbar */
 }
 
 .app {
-  min-height: 100vh;
-  padding: 3rem 1.5rem 4rem;
+  /* Ensure the app fills the visible viewport height across browsers */
+  min-height: 100vh;   /* fallback */
+  min-height: 100svh;  /* small viewport unit (mobile address bar shown) */
+  min-height: 100dvh;  /* dynamic viewport unit (preferred) */
+  box-sizing: border-box; /* include padding within viewport height */
+  padding: 3rem 1.5rem calc(4rem + env(safe-area-inset-bottom, 0px));
   display: grid;
   place-items: center;
   gap: 1rem;
@@ -91,7 +97,7 @@ button#spin-button:active {
   transform: translateY(2px) scale(0.98);
   box-shadow: 0 8px 18px rgba(255, 196, 45, 0.3);
 }
-
+html, body { cursor: none; }
 #status {
   min-height: 1.2em;
   font-weight: 500;
