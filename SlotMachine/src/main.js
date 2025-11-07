@@ -1,21 +1,42 @@
-import "./style.css";
-
-const IMAGE_DIR = "./images/";
-const IMAGE_FILES = [
-  "icon01.png",
-  "icon02.png",
-  "icon03.png",
-  "icon04.png",
-  "icon05.png",
-  "icon06.png",
-  "icon07.png",
-  "icon08.png",
-  "icon09.png",
-  "icon10.png"
+const SYMBOL_DEFINITIONS = [
+  { emoji: "🍒", label: "樱桃", background: "#D32F2F" },
+  { emoji: "🍋", label: "柠檬", background: "#FBC02D", textColor: "#3E2723" },
+  { emoji: "🍇", label: "葡萄", background: "#673AB7" },
+  { emoji: "🍉", label: "西瓜", background: "#00897B" },
+  { emoji: "⭐", label: "星星", background: "#FFD54F", textColor: "#5D4037" },
+  { emoji: "🔔", label: "铃铛", background: "#FF7043" },
+  { emoji: "💎", label: "宝石", background: "#00ACC1" },
+  { emoji: "7️⃣", label: "幸运 7", background: "#C2185B" },
+  { emoji: "🍀", label: "四叶草", background: "#43A047" },
+  { emoji: "💰", label: "钱袋", background: "#6D4C41" },
 ];
 
-// 若文件名不同，按实际 PNG 名称修改上面的数组即可。
-const imagePaths = IMAGE_FILES.map((file) => `${IMAGE_DIR}${file}`);
+const SYMBOL_SIZE = 144;
+const SYMBOL_FONT = "72px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif";
+
+function createSymbolImage(definition, index) {
+  const canvas = document.createElement("canvas");
+  canvas.width = SYMBOL_SIZE;
+  canvas.height = SYMBOL_SIZE;
+
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = definition.background;
+  ctx.fillRect(0, 0, SYMBOL_SIZE, SYMBOL_SIZE);
+
+  ctx.font = SYMBOL_FONT;
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = definition.textColor || "#FFFFFF";
+  ctx.fillText(definition.emoji, SYMBOL_SIZE / 2, SYMBOL_SIZE / 2 + 4);
+
+  return {
+    src: canvas.toDataURL("image/png"),
+    index,
+    alt: `${definition.label}符号`,
+  };
+}
+
+const SYMBOL_IMAGES = SYMBOL_DEFINITIONS.map(createSymbolImage);
 
 const spinButton = document.getElementById("spin-button");
 const statusOutput = document.getElementById("status");
@@ -29,14 +50,14 @@ let isSpinning = false;
 let intervalHandles = [];
 
 function chooseRandomImage() {
-  const index = Math.floor(Math.random() * imagePaths.length);
-  return { src: imagePaths[index], index };
+  const index = Math.floor(Math.random() * SYMBOL_IMAGES.length);
+  return SYMBOL_IMAGES[index];
 }
 
 function applyImage(reel, image) {
   const img = reel.querySelector("img");
   img.src = image.src;
-  img.alt = `符号 ${image.index + 1}`;
+  img.alt = image.alt;
 }
 
 function startSpin() {
