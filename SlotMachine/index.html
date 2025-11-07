@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+  <head>
+    <meta charset="utf-8" />
+    <title>幸运老虎机</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <h1>幸运老虎机</h1>
+      <p class="hint">按下空格键开始旋转，也可以点击下面的按钮。</p>
+
+      <section class="slot-machine" role="group" aria-label="老虎机">
+        <div class="reel" data-reel="0">
+          <img alt="随机符号" />
+        </div>
+        <div class="reel" data-reel="1">
+          <img alt="随机符号" />
+        </div>
+        <div class="reel" data-reel="2">
+          <img alt="随机符号" />
+        </div>
+      </section>
+
+      <button id="spin-button" type="button">开始旋转 (空格)</button>
+      <output id="status" role="status" aria-live="polite"></output>
+    </main>
+
+    <script src="./slot.js" type="module"></script>
+  </body>
+</html>

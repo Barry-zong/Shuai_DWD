@@ -1,0 +1,97 @@
+:root {
+  color-scheme: light dark;
+  font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  background: radial-gradient(circle at top, #1d1f33 0%, #0b0d1b 60%, #000 100%);
+  color: #f5f6fb;
+}
+
+body,
+html {
+  margin: 0;
+  min-height: 100%;
+}
+
+.app {
+  min-height: 100vh;
+  padding: 3rem 1.5rem 4rem;
+  display: grid;
+  place-items: center;
+  gap: 1rem;
+  text-align: center;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  letter-spacing: 0.08em;
+}
+
+.hint {
+  margin: 0;
+  color: #b5b9de;
+}
+
+.slot-machine {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1.5rem;
+  background: linear-gradient(145deg, #10132a, #23264d);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+}
+
+.reel {
+  width: clamp(120px, 15vw, 160px);
+  aspect-ratio: 1 / 1;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: rgba(8, 11, 24, 0.85);
+  box-shadow: inset 0 0 25px rgba(0, 0, 0, 0.55);
+  display: grid;
+  place-items: center;
+}
+
+.reel img {
+  max-width: 70%;
+  transition: transform 0.2s ease;
+}
+
+.reel.is-spinning img {
+  animation: wobble 0.3s linear infinite;
+}
+
+@keyframes wobble {
+  0%,
+  100% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(2deg) scale(1.1);
+  }
+}
+
+button#spin-button {
+  appearance: none;
+  border: none;
+  padding: 0.9rem 2.4rem;
+  font-size: 1.2rem;
+  border-radius: 999px;
+  color: #111428;
+  background: linear-gradient(160deg, #ffd86f, #f8a21a);
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: 0 12px 30px rgba(255, 196, 45, 0.35);
+}
+
+button#spin-button:active {
+  transform: translateY(2px) scale(0.98);
+  box-shadow: 0 8px 18px rgba(255, 196, 45, 0.3);
+}
+
+#status {
+  min-height: 1.2em;
+  font-weight: 500;
+  color: #ffd86f;
+}
