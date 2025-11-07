@@ -1,3 +1,5 @@
+import "./style.css";
+
 const IMAGE_DIR = "./images/";
 const IMAGE_FILES = [
   "icon01.png",
