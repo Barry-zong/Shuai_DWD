@@ -14,6 +14,7 @@ const SYMBOL_DEFINITIONS = [
 const SYMBOL_SIZE = 144;
 const SYMBOL_FONT = "72px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif";
 
+
 function createSymbolImage(definition, index) {
   const canvas = document.createElement("canvas");
   canvas.width = SYMBOL_SIZE;
@@ -40,13 +41,17 @@ const SYMBOL_IMAGES = SYMBOL_DEFINITIONS.map(createSymbolImage);
 
 const spinButton = document.getElementById("spin-button");
 const statusOutput = document.getElementById("status");
+const coinHint = document.getElementById("coin-hint");
 const reels = [...document.querySelectorAll(".reel")];
 
 const baseSpinDuration = 2200; // Minimum spin duration in milliseconds
 const reelDelay = 450; // Delay between reels stopping
 const tickInterval = 80; // Interval for symbol updates
 
+// detect different states
+let canCoin = true;
 let isSpinning = false;
+let canSpin = false; // set true when coin detected via WS/HTTP
 let intervalHandles = [];
 
 function chooseRandomImage() {
@@ -129,12 +134,23 @@ let piWS;
 let lastPiPressed = false; // for edge detection
 
 function handlePiState(state) {
-  if (!state || typeof state.pressed !== 'boolean') return;
-  // Trigger only on rising edge: not pressed -> pressed
-  if (state.pressed && !lastPiPressed) {
-    startSpin();
+  if (!state) return;
+
+  // Handle coin pulse: when coin=true, allow spin and update hint text
+  if (typeof state.coin === 'boolean' && state.coin&&canCoin) {
+    canSpin = true;
+    canCoin = false; // prevent multiple coins until reset
+    if (coinHint) coinHint.textContent = "Now you can spin";
   }
-  lastPiPressed = !!state.pressed;
+
+  // Handle button press with rising edge: not pressed -> pressed
+  if (typeof state.pressed === 'boolean'&&canSpin) {
+    if (state.pressed && !lastPiPressed) {
+      startSpin();
+      canSpin = false; // require new coin for next spin
+    }
+    lastPiPressed = !!state.pressed;
+  }
 }
 
 function connectPiWS() {
@@ -171,4 +187,3 @@ async function pollPi() {
 // Start WS and a light polling fallback
 connectPiWS();
 setInterval(pollPi, 1000);
-
