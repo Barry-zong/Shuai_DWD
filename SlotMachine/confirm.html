@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loading & Terms - Lucky Slot</title>
+    <style>
+      :root {
+        --blue: #0b64d8; --text: #0f1426; --panel: #ffffff;
+        --track: rgba(255,255,255,0.5); --bar: #ffd86f; --bar2: #f8a21a;
+      }
+      html, body {
+        height: 100%; margin: 0; overflow: hidden;
+        font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+        background: radial-gradient(circle at 50% -20%, #3e86ee 0%, var(--blue) 60%, #053a91 100%);
+        color: #0f1426;
+      }
+      .page { min-height: 100dvh; display: grid; grid-template-rows: 1fr 1fr; }
+
+      /* Top: progress */
+      .top { display: grid; place-items: center; }
+      .progress { width: min(84vw, 760px); }
+      .bar-track {
+        height: 18px; border-radius: 999px; background: var(--track); overflow: hidden;
+        box-shadow: inset 0 2px 10px rgba(0,0,0,.25);
+      }
+      .bar {
+        height: 100%; width: 0%; background: linear-gradient(160deg, var(--bar), var(--bar2));
+        border-radius: inherit; box-shadow: 0 10px 24px rgba(255,196,45,.35);
+        animation: load 4s ease-in-out infinite; /* 循环渐进效果 */
+      }
+      @keyframes load {
+        0% { width: 0%; }
+        60% { width: 100%; }
+        100% { width: 100%; }
+      }
+      .loading-text { text-align: center; color: #eaf1ff; margin-top: 12px; opacity: .9; }
+
+      /* Bottom: terms */
+      .bottom { display: grid; place-items: center; padding: 0 4vw 4vh; }
+      .card {
+        width: min(92vw, 900px); background: var(--panel); border-radius: 16px; padding: clamp(18px, 4vw, 28px);
+        box-shadow: 0 24px 60px rgba(0,0,0,.25); color: var(--text);
+      }
+      .card h2 { margin: 0 0 12px; font-size: clamp(18px, 4vw, 22px); }
+      .terms { margin: 0; padding-left: 1.2em; line-height: 1.6; }
+      .agree {
+        display: flex; align-items: center; gap: 10px; margin-top: 14px; font-weight: 700;
+      }
+      .agree input { width: 20px; height: 20px; }
+      .helper { color: #5c6a99; font-size: 0.95rem; margin-top: 4px; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <section class="top">
+        <div class="progress" aria-label="Loading">
+          <div class="bar-track"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <div class="loading-text">Preparing your spin…</div>
+        </div>
+      </section>
+
+      <section class="bottom">
+        <div class="card">
+          <h2>Confirmation</h2>
+          <ul class="terms">
+            <li>I acknowledge the information I provided may be used.</li>
+            <li>I believe the system will be as fair, transparent, and procedurally neutral as possible.</li>
+            <li>I understand paying more may or may not improve my odds.</li>
+          </ul>
+          <label class="agree"><input id="agree" type="checkbox" /> I have read and agree to the above.</label>
+          <div class="helper">Checking the box will continue to the game.</div>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      const agree = document.getElementById('agree');
+      agree.addEventListener('change', (e) => {
+        if (e.target.checked) {
+          window.location.href = './index.html';
+        }
+      });
+    </script>
+  </body>
+  </html>
+

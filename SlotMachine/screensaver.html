@@ -22,8 +22,8 @@
         position: absolute;
         left: 0;
         top: 0;
-        width: min(40vmin, 320px);
-        height: min(40vmin, 320px);
+        width: min(50vmin, 400px);   /* 增大 logo：40vmin→50vmin, 320px→400px */
+        height: min(50vmin, 400px);
         display: grid;
         place-items: center;
         user-select: none;
@@ -44,7 +44,7 @@
         transform: translateX(-50%);
         color: #cfe2ff;
         opacity: .8;
-        font-size: clamp(12px, 2.8vmin, 16px);
+        font-size: clamp(25px, 5vmin, 40px);  /* 增大提示文字：12px→16px, 2.8vmin→3.5vmin, 16px→22px */
       }
     </style>
   </head>
@@ -64,8 +64,8 @@
       // 初始位置与速度（像素/秒）
       let x = 60, y = 60;
       const base = Math.max(120, Math.min(window.innerWidth, window.innerHeight)) / 4;
-      let vx = base * (Math.random() > 0.5 ? 1 : -1);
-      let vy = base * (Math.random() > 0.5 ? 1 : -1);
+      let vx = base *0.2 * (Math.random() > 0.5 ? 1 : -1);
+      let vy = base * 0.2 * (Math.random() > 0.5 ? 1 : -1);
       let last = performance.now();
 
       function currentBox() {
@@ -73,7 +73,7 @@
       }
 
       function step(now) {
-        const dt = (now - last) / 2500; // 秒
+        const dt = (now - last) / 1000; // 秒（修复：2500→1000，移除阻尼感）
         last = now;
         const node = currentBox();
         const w = node.offsetWidth;
