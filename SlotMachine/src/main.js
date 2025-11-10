@@ -144,8 +144,8 @@ function handlePiState(state) {
   }
 
   // Handle button press with rising edge: not pressed -> pressed
-  if (typeof state.pressed === 'boolean'&&canSpin) {
-    if (state.pressed && !lastPiPressed) {
+  if (typeof state.pressed === 'boolean') {
+    if (state.pressed && !lastPiPressed && canSpin) {
       startSpin();
       canSpin = false; // require new coin for next spin
     }
