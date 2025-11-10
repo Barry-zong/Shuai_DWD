@@ -7,7 +7,7 @@
     <style>
       :root {
         --blue: #0b64d8; --text: #0f1426; --panel: #ffffff;
-        --track: rgba(255,255,255,0.5); --bar: #ffd86f; --bar2: #f8a21a;
+        --track: rgba(255,255,255,0.5); --bar: #ffffff; --bar2: #e6e6e6;;
       }
       html, body {
         height: 100%; margin: 0; overflow: hidden;
@@ -15,29 +15,38 @@
         background: radial-gradient(circle at 50% -20%, #3e86ee 0%, var(--blue) 60%, #053a91 100%);
         color: #0f1426;
       }
-      .page { min-height: 100dvh; display: grid; grid-template-rows: 1fr 1fr; }
+      .page { min-height: 100dvh; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 3vh; padding: 4vh; }
 
       /* Top: progress */
       .top { display: grid; place-items: center; }
       .progress { width: min(84vw, 760px); }
       .bar-track {
-        height: 18px; border-radius: 999px; background: var(--track); overflow: hidden;
+        height: 24px; border-radius: 8px; background: var(--track); overflow: hidden;
         box-shadow: inset 0 2px 10px rgba(0,0,0,.25);
+        display: flex; gap: 4px; padding: 4px;
       }
-      .bar {
-        height: 100%; width: 0%; background: linear-gradient(160deg, var(--bar), var(--bar2));
-        border-radius: inherit; box-shadow: 0 10px 24px rgba(255,196,45,.35);
-        animation: load 4s ease-in-out infinite; /* 循环渐进效果 */
+      .bar-block {
+        flex: 1; background: rgba(0, 0, 0, 0.2); border-radius: 3px;
+        transition: all 0.3s ease;
+        opacity: 0;
       }
-      @keyframes load {
-        0% { width: 0%; }
-        60% { width: 100%; }
-        100% { width: 100%; }
+      .bar-block.visible {
+        opacity: 1;
+      }
+      .bar-block.filled {
+        background: linear-gradient(180deg, var(--bar), var(--bar2));
+      }
+      .progress {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
+      .progress.active {
+        opacity: 1;
       }
       .loading-text { text-align: center; color: #eaf1ff; margin-top: 12px; opacity: .9; }
 
       /* Bottom: terms */
-      .bottom { display: grid; place-items: center; padding: 0 4vw 4vh; }
+      .bottom { display: grid; place-items: center; padding: 0; }
       .card {
         width: min(92vw, 900px); background: var(--panel); border-radius: 16px; padding: clamp(18px, 4vw, 28px);
         box-shadow: 0 24px 60px rgba(0,0,0,.25); color: var(--text);
@@ -55,7 +64,18 @@
     <div class="page">
       <section class="top">
         <div class="progress" aria-label="Loading">
-          <div class="bar-track"><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div></div>
+          <div class="bar-track" id="barTrack">
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+            <div class="bar-block"></div>
+          </div>
           <div class="loading-text">Preparing your spin…</div>
         </div>
       </section>
@@ -69,18 +89,49 @@
             <li>I understand paying more may or may not improve my odds.</li>
           </ul>
           <label class="agree"><input id="agree" type="checkbox" /> I have read and agree to the above.</label>
-          <div class="helper">Checking the box will continue to the game.</div>
         </div>
       </section>
     </div>
 
     <script>
       const agree = document.getElementById('agree');
+      const progress = document.querySelector('.progress');
+      const blocks = document.querySelectorAll('.bar-block');
+
+      // 复选框点击事件
       agree.addEventListener('change', (e) => {
         if (e.target.checked) {
-          window.location.href = './index.html';
+          // 禁用复选框，防止重复点击
+          agree.disabled = true;
+
+          // 显示进度条
+          progress.classList.add('active');
+
+          // 延迟一下再开始填充，让用户看到进度条出现
+          setTimeout(() => {
+            startLoading();
+          }, 300);
+        } else {
+          agree.disabled = false;
         }
       });
+
+      // 开始加载动画
+      function startLoading() {
+        blocks.forEach((block, index) => {
+          setTimeout(() => {
+            block.classList.add('visible');
+            block.classList.add('filled');
+
+            // 如果是最后一个块，加载完成后跳转
+            if (index === blocks.length - 1) {
+              setTimeout(() => {
+                window.location.href = './index.html';
+              }, 500); // 最后一个块填充后等待500ms再跳转
+            }
+          }, index * 300); // 每个块间隔300ms
+        });
+      }
     </script>
   </body>
   </html>

@@ -13,6 +13,7 @@ let myObject = {
     "secret": "This is my secret data!"
 }
 
+app.set('view engine', 'ejs');
 //handle search requests
 app.get('/search', mySearchRequestHandler);
 
@@ -37,20 +38,41 @@ function myReportRequestHandler(req, res) {
     secretList.push(secret);
 
     console.log("A secret report was received!");
-    res.send('Your secret report was received loud and clear!');
+    res.render('reportReceived.ejs', {
+        message: 'Your secret report was received loud and clear!',
+        submitted: secret
+    });
 }
 
 app.get('/allSecrets', myAllSecretsRequestHandler);
 function myAllSecretsRequestHandler(req, res) {
     //res.send(secretList.toString());
-    let secretHtml = "<h1>All Secrets</h1><ul>";
-    for (let i = 0; i < secretList.length; i++) {
-        secretHtml += "<li>" + secretList[i] + "</li>";
+    // let secretHtml = "<h1>All Secrets</h1><ul>";
+    // for (let i = 0; i < secretList.length; i++) {
+    //     secretHtml += "<li>" + secretList[i] + "</li>";
 
-    }
-    secretHtml += "</ul>";
-    res.send(secretHtml);
+    // }
+    // secretHtml += "</ul>";
+    // res.send(secretHtml);
+    let dataToRender = {
+        mySecrets: secretList
+    };
+    res.render('secrets.ejs', dataToRender);
 
 }
+app.get('/sayHello', mySayHelloRequestHandler);
+function mySayHelloRequestHandler(req, res) {
+    let name = req.query.name;
+    let dataToRender = {
+        nameKey: name
+    };
+    res.render('sayHello.ejs',dataToRender);
+}
+
+// render a hello page with a name from query string
+app.get('/sayHello', (req, res) => {
+    const name = req.query.name || 'Guest';
+    res.render('sayHello.ejs', { nameKey: name });
+});
 
 app.listen(8080);

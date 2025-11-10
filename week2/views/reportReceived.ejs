@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Secret Submitted</title>
+  <style>
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background: #fff;
+    }
+    .wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      padding: 24px;
+      text-align: center;
+    }
+    .msg { font-size: 18px; }
+    .secret { color: #666; font-style: italic; }
+    .btn {
+      appearance: none;
+      border: 1px solid #ccc;
+      background: #f7f7f7;
+      border-radius: 6px;
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn:hover { background: #eee; }
+  </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="msg"><%= message %></div>
+      <% if (submitted) { %>
+        <div class="secret">Submitted: <%= submitted %></div>
+      <% } %>
+      <button class="btn" onclick="window.location.href='/allSecrets'">Go to All Secrets</button>
+    </div>
+  </body>
+  </html>
+
