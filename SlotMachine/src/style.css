@@ -3,6 +3,7 @@
   font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
   background: radial-gradient(circle at top, #1d1f33 0%, #0b0d1b 60%, #000 100%);
   color: #f5f6fb;
+  font-size: 18px; /* Slightly larger base for small screens */
 }
 
 body,
@@ -28,13 +29,14 @@ html {
 
 h1 {
   margin: 0;
-  font-size: clamp(2.5rem, 5vw, 3.8rem);
+  font-size: clamp(2.8rem, 6vw, 4.4rem);
   letter-spacing: 0.08em;
 }
 
 .hint {
   margin: 0;
   color: #b5b9de;
+  font-size: clamp(1.1rem, 3.6vw, 1.6rem);
 }
 
 .slot-machine {
@@ -83,7 +85,7 @@ button#spin-button {
   appearance: none;
   border: none;
   padding: 0.9rem 2.4rem;
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   border-radius: 999px;
   color: #111428;
   background: linear-gradient(160deg, #ffd86f, #f8a21a);
@@ -102,4 +104,5 @@ html, body { cursor: none; }
   min-height: 1.2em;
   font-weight: 500;
   color: #ffd86f;
+  font-size: 1.1rem;
 }

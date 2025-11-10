@@ -43,7 +43,7 @@
       .progress.active {
         opacity: 1;
       }
-      .loading-text { text-align: center; color: #eaf1ff; margin-top: 12px; opacity: .9; }
+      .loading-text { text-align: center; color: #eaf1ff; margin-top: 12px; opacity: .9; font-size: clamp(18px, 3.2vmin, 22px); }
 
       /* Bottom: terms */
       .bottom { display: grid; place-items: center; padding: 0; }
@@ -51,13 +51,13 @@
         width: min(92vw, 900px); background: var(--panel); border-radius: 16px; padding: clamp(18px, 4vw, 28px);
         box-shadow: 0 24px 60px rgba(0,0,0,.25); color: var(--text);
       }
-      .card h2 { margin: 0 0 12px; font-size: clamp(18px, 4vw, 22px); }
-      .terms { margin: 0; padding-left: 1.2em; line-height: 1.6; }
+      .card h2 { margin: 0 0 12px; font-size: clamp(20px, 4.8vw, 26px); }
+      .terms { margin: 0; padding-left: 1.2em; line-height: 1.6; font-size: 1.05rem; }
       .agree {
         display: flex; align-items: center; gap: 10px; margin-top: 14px; font-weight: 700;
       }
       .agree input { width: 20px; height: 20px; }
-      .helper { color: #5c6a99; font-size: 0.95rem; margin-top: 4px; }
+      .helper { color: #5c6a99; font-size: 1rem; margin-top: 4px; }
     </style>
   </head>
   <body>
@@ -126,7 +126,7 @@
             // 如果是最后一个块，加载完成后跳转
             if (index === blocks.length - 1) {
               setTimeout(() => {
-                window.location.href = './index.html';
+                window.location.href = './spin.html';
               }, 500); // 最后一个块填充后等待500ms再跳转
             }
           }, index * 300); // 每个块间隔300ms
@@ -135,4 +135,3 @@
     </script>
   </body>
   </html>
-

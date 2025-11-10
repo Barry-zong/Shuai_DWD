@@ -26,10 +26,10 @@
         box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(20px, 4vw, 28px); box-sizing: border-box;
         text-align: center;
       }
-      .headline { margin: 0 0 6px; font-size: clamp(22px, 4.5vw, 30px); font-weight: 800; max-width: 600px; margin-left: auto; margin-right: auto; }
-      .lead { margin: 0 0 18px; color: #334275; }
+      .headline { margin: 0 0 6px; font-size: clamp(26px, 5.5vw, 36px); font-weight: 800; max-width: 600px; margin-left: auto; margin-right: auto; }
+      .lead { margin: 0 0 18px; color: #334275; font-size: 1.05rem; }
 
-      .question { margin: 16px 0 8px; font-weight: 700; color: #1b2554; }
+      .question { margin: 16px 0 8px; font-weight: 700; color: #1b2554; font-size: 1.1rem; }
       .rail-wrap { position: relative; z-index: 2; }  /* 确保 rail 在上层 */
       /* 移除中心指示线
       .rail-wrap::after {
@@ -50,7 +50,7 @@
       .rail::-webkit-scrollbar { display: none; }
       .option {
         position: relative; z-index: 3;  /* 选项需要最高层级以显示投影 */
-        flex: 0 0 auto; width: clamp(140px, 22vw, 220px); height: 84px; border-radius: 14px;
+        flex: 0 0 auto; width: clamp(140px, 22vw, 220px); height: 92px; border-radius: 14px;
         background: #eef2ff; color: #111428; display: grid; place-items: center; font-weight: 700;
         scroll-snap-align: center; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);  /* 普通选项投影：黑色 */
         user-select: none; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, background .25s ease, opacity .2s ease;
@@ -59,13 +59,13 @@
       .option:active { transform: scale(.98); }
       .option.selected { background: linear-gradient(160deg, var(--accent), var(--accent2)); color: #ffffff; box-shadow: 0 10px 24px rgba(47, 0, 255, 0.45);  /* 选中选项投影：蓝紫色 */ }
       @media (prefers-reduced-motion: reduce) { .option { transition: none; } }
-      .option .top { font-weight: 800; }
-      .option .bottom { font-size: 0.9rem; opacity: .7; filter: blur(2.0px); }
+      .option .top { font-weight: 800; font-size: 1.1rem; }
+      .option .bottom { font-size: 1rem; opacity: .7; filter: blur(2.0px); }
 
       .actions { position: relative; z-index: 1; margin-top: 18px; display: grid; place-items: center; }  /* actions 在最底层 */
       .primary {
         appearance: none; border: none; border-radius: 999px; padding: 12px 22px; font-weight: 800; cursor: pointer;
-        background: linear-gradient(160deg, var(--accent), var(--accent2)); color: #ffffff; font-size: 16px;
+        background: linear-gradient(160deg, var(--accent), var(--accent2)); color: #ffffff; font-size: 20px;
         box-shadow: 0 12px 30px rgba(47, 0, 255, 0.35);  /* 蓝紫色投影 */
         /* 其他颜色选项：
            rgba(255, 0, 0, 0.35)      - 红色

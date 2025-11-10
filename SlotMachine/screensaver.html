@@ -33,7 +33,7 @@
         background: #ffffff;
         color: #0b64d8;
         font-weight: 800;
-        font-size: clamp(18px, 5vmin, 28px);
+        font-size: clamp(22px, 6vmin, 34px);
         border-radius: 12px;
         box-shadow: 0 8px 30px rgba(0,0,0,.25);
       }
@@ -44,7 +44,7 @@
         transform: translateX(-50%);
         color: #cfe2ff;
         opacity: .8;
-        font-size: clamp(25px, 5vmin, 40px);  /* 增大提示文字：12px→16px, 2.8vmin→3.5vmin, 16px→22px */
+        font-size: clamp(30px, 6vmin, 48px);
       }
     </style>
   </head>
@@ -105,9 +105,9 @@
       }
       window.addEventListener('resize', clampToView);
 
-      // 任意交互进入登记页
+      // 点击或触摸进入登记页（不响应键盘）
       const goRegister = () => { window.location.href = './register.html'; };
-      ['pointerdown', 'keydown', 'touchstart', 'mousedown'].forEach(evt => {
+      ['pointerdown', 'touchstart', 'mousedown'].forEach(evt => {
         window.addEventListener(evt, goRegister, { once: true });
       });
 
