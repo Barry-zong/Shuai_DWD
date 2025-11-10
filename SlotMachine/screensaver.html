@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Screensaver - Lucky Slot</title>
+    <style>
+      html, body {
+        margin: 0;
+        height: 100%;
+        overflow: hidden;
+        background: #01377e; /* 蓝色背景 */
+        cursor: none; /* 屏保隐藏鼠标 */
+        font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
+      }
+      .stage {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+      }
+      #logo, #fallback {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: min(40vmin, 320px);
+        height: min(40vmin, 320px);
+        display: grid;
+        place-items: center;
+        user-select: none;
+        pointer-events: none;
+      }
+      #fallback {
+        background: #ffffff;
+        color: #0b64d8;
+        font-weight: 800;
+        font-size: clamp(18px, 5vmin, 28px);
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0,0,0,.25);
+      }
+      .hint {
+        position: fixed;
+        left: 50%;
+        bottom: 4vh;
+        transform: translateX(-50%);
+        color: #cfe2ff;
+        opacity: .8;
+        font-size: clamp(12px, 2.8vmin, 16px);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="stage">
+      <img id="logo" alt="US Slot" src="/images/usSlotLogo.png" />
+      <!-- <div id="fallback" hidden>US SLOT</div> -->
+      <div class="hint">Touch to Register</div>
+    </div>
+
+    <script>
+      const elLogo = document.getElementById('logo');
+      const elFallback = document.getElementById('fallback');
+      // 如果图片加载失败，则使用方块占位
+      elLogo.onerror = () => { elLogo.hidden = true; elFallback.hidden = false; };
+
+      // 初始位置与速度（像素/秒）
+      let x = 60, y = 60;
+      const base = Math.max(120, Math.min(window.innerWidth, window.innerHeight)) / 4;
+      let vx = base * (Math.random() > 0.5 ? 1 : -1);
+      let vy = base * (Math.random() > 0.5 ? 1 : -1);
+      let last = performance.now();
+
+      function currentBox() {
+        return (elLogo.hidden ? elFallback : elLogo);
+      }
+
+      function step(now) {
+        const dt = (now - last) / 2500; // 秒
+        last = now;
+        const node = currentBox();
+        const w = node.offsetWidth;
+        const h = node.offsetHeight;
+
+        x += vx * dt;
+        y += vy * dt;
+
+        const maxX = window.innerWidth - w;
+        const maxY = window.innerHeight - h;
+
+        if (x <= 0) { x = 0; vx = Math.abs(vx); }
+        if (x >= maxX) { x = maxX; vx = -Math.abs(vx); }
+        if (y <= 0) { y = 0; vy = Math.abs(vy); }
+        if (y >= maxY) { y = maxY; vy = -Math.abs(vy); }
+
+        node.style.left = x + 'px';
+        node.style.top = y + 'px';
+
+        requestAnimationFrame(step);
+      }
+
+      function clampToView() {
+        const node = currentBox();
+        const w = node.offsetWidth;
+        const h = node.offsetHeight;
+        x = Math.min(Math.max(0, x), window.innerWidth - w);
+        y = Math.min(Math.max(0, y), window.innerHeight - h);
+      }
+      window.addEventListener('resize', clampToView);
+
+      // 任意交互进入登记页
+      const goRegister = () => { window.location.href = './register.html'; };
+      ['pointerdown', 'keydown', 'touchstart', 'mousedown'].forEach(evt => {
+        window.addEventListener(evt, goRegister, { once: true });
+      });
+
+      requestAnimationFrame(step);
+    </script>
+  </body>
+  </html>
