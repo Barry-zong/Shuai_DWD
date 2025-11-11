@@ -63,6 +63,7 @@ function applyImage(reel, image) {
   const img = reel.querySelector("img");
   img.src = image.src;
   img.alt = image.alt;
+  try { img.dataset.index = String(image.index); } catch (_) {}
 }
 
 function startSpin() {
@@ -104,7 +105,26 @@ function stopReel(reelIndex) {
   const allStopped = reels.every((r) => !r.classList.contains("is-spinning"));
   if (allStopped) {
     isSpinning = false;
-    statusOutput.textContent = "Play again!";
+    // Collect final symbols
+    const finals = reels.map((r) => {
+      const im = r.querySelector('img');
+      return {
+        index: parseInt(im?.dataset?.index || '-1', 10),
+        label: (im?.alt || '').replace(/\s*symbol$/i, '')
+      };
+    });
+    const win = finals.length === 3 && finals[0].index === finals[1].index && finals[1].index === finals[2].index && finals[0].index >= 0;
+    try {
+      localStorage.setItem('lastSpin', JSON.stringify({
+        symbols: finals.map(f => f.index),
+        labels: finals.map(f => f.label),
+        win,
+        ts: Date.now()
+      }));
+    } catch (_) {}
+    statusOutput.textContent = win ? "Jackpot!" : "Done";
+    // Navigate to result page after a short pause
+    setTimeout(() => { try { window.location.href = '/result.html'; } catch(_) { window.location.href = './result.html'; } }, 600);
   }
 }
 
