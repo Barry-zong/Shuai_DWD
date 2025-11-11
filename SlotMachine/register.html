@@ -1,371 +1,503 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Registration - Lucky Slot</title>
-    <style>
-      :root {
-        --blue: #0b64d8; --panel: #ffffff; --text: #0f1426;
-        --muted: #5c6a99; --accent: #2f00ff; --accent2: #0206d1;
-      }
-      html, body {
-        height: 100%; margin: 0; overflow-y: hidden; /* 去掉右侧垂直滚动条 */
-        background: radial-gradient(circle at 50% -20%, #002fcb 0%, #70b3ff 60%, #004e83 100%);
-        font-family: "Segoe UI", "PingFang SC", "Hiragino San GB", sans-serif;
-      }
-      .wrap {
-        min-height: 100vh;   /* 回退 */
-        min-height: 100svh;  /* 小视口 */
-        min-height: 100dvh;  /* 动态视口 */
-        display: grid; place-items: center; padding: 4vh 2vw;
-        box-sizing: border-box;
-      }
-      .card {
-        width: min(96vw, 780px); background: var(--panel); color: var(--text); border-radius: 16px;
-        box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(20px, 4vw, 28px); box-sizing: border-box;
-        text-align: center;
-      }
-      .headline { margin: 0 0 6px; font-size: clamp(26px, 5.5vw, 36px); font-weight: 800; max-width: 600px; margin-left: auto; margin-right: auto; }
-      .lead { margin: 0 0 18px; color: #334275; font-size: 1.05rem; }
 
-      .question { margin: 16px 0 8px; font-weight: 700; color: #1b2554; font-size: 1.1rem; }
-      .rail-wrap { position: relative; z-index: 2; }  /* 确保 rail 在上层 */
-      /* 移除中心指示线
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Registration - Lucky Slot</title>
+  <link rel="stylesheet" href="./src/crt.css" />
+  <style>
+    :root {
+      --blue: #0b64d8;
+      --panel: #ffffff;
+      --text: #0f1426;
+      --muted: #5c6a99;
+      --accent: #2f00ff;
+      --accent2: #0206d1;
+    }
+
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      overflow-y: hidden;
+      /* 去掉右侧垂直滚动条 */
+      background: radial-gradient(circle at 50% -20%, #002fcb 0%, #70b3ff 60%, #004e83 100%);
+      font-family: "Segoe UI", "PingFang SC", "Hiragino San GB", sans-serif;
+    }
+
+    .wrap {
+      min-height: 100vh;
+      /* 回退 */
+      min-height: 100svh;
+      /* 小视口 */
+      min-height: 100dvh;
+      /* 动态视口 */
+      display: grid;
+      place-items: center;
+      padding: 4vh 2vw;
+      box-sizing: border-box;
+    }
+
+    .card {
+      width: min(96vw, 780px);
+      background: var(--panel);
+      color: var(--text);
+      border-radius: 16px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .25);
+      padding: clamp(20px, 4vw, 28px);
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .headline {
+      margin: 0 0 6px;
+      font-size: clamp(26px, 5.5vw, 36px);
+      font-weight: 800;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .lead {
+      margin: 0 0 18px;
+      color: #334275;
+      font-size: 1.05rem;
+    }
+
+    .question {
+      margin: 16px 0 8px;
+      font-weight: 700;
+      color: #1b2554;
+      font-size: 1.1rem;
+    }
+
+    .rail-wrap {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* 确保 rail 在上层 */
+    /* 移除中心指示线
       .rail-wrap::after {
         content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-1px);
         background: linear-gradient(180deg, transparent, #99a8dd 40%, #99a8dd 60%, transparent);
         pointer-events: none; opacity: .65; z-index: 1;
       }
       */
-      .rail {
-        position: relative; z-index: 2;  /* rail 本身也需要 z-index */
-        display: flex; gap: 14px; overflow-x: auto; overscroll-behavior-x: contain;
-        scroll-snap-type: x mandatory; scroll-snap-stop: always; padding: 16px 50%; margin: 0;
-        /* 让手指直接在选项区滑动，隐藏滚动条 */
-        -webkit-overflow-scrolling: touch; /* iOS 惯性 */
-        touch-action: pan-x; /* 允许横向滑动 */
-        scrollbar-width: none; /* Firefox 隐藏 */
-      }
-      .rail::-webkit-scrollbar { display: none; }
+    .rail {
+      position: relative;
+      z-index: 2;
+      /* rail 本身也需要 z-index */
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scroll-snap-type: x mandatory;
+      scroll-snap-stop: always;
+      padding: 16px 50%;
+      margin: 0;
+      /* 让手指直接在选项区滑动，隐藏滚动条 */
+      -webkit-overflow-scrolling: touch;
+      /* iOS 惯性 */
+      touch-action: pan-x;
+      /* 允许横向滑动 */
+      scrollbar-width: none;
+      /* Firefox 隐藏 */
+    }
+
+    .rail::-webkit-scrollbar {
+      display: none;
+    }
+
+    .option {
+      position: relative;
+      z-index: 3;
+      /* 选项需要最高层级以显示投影 */
+      flex: 0 0 auto;
+      width: clamp(140px, 22vw, 220px);
+      height: 92px;
+      border-radius: 14px;
+      background: #eef2ff;
+      color: #111428;
+      display: grid;
+      place-items: center;
+      font-weight: 700;
+      scroll-snap-align: center;
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+      /* 普通选项投影：黑色 */
+      user-select: none;
+      cursor: pointer;
+      transition: transform .2s ease, box-shadow .2s ease, background .25s ease, opacity .2s ease;
+      transform-origin: center;
+      will-change: transform, box-shadow, background, opacity;
+    }
+
+    .option:active {
+      transform: scale(.98);
+    }
+
+    .option.selected {
+      background: linear-gradient(var(--sel-angle, 160deg), var(--accent), var(--accent2));
+      color: #ffffff;
+      box-shadow: 0 10px 24px rgba(47, 0, 255, 0.45);
+      /* 选中选项投影：蓝紫色 */
+    }
+
+    @media (prefers-reduced-motion: reduce) {
       .option {
-        position: relative; z-index: 3;  /* 选项需要最高层级以显示投影 */
-        flex: 0 0 auto; width: clamp(140px, 22vw, 220px); height: 92px; border-radius: 14px;
-        background: #eef2ff; color: #111428; display: grid; place-items: center; font-weight: 700;
-        scroll-snap-align: center; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);  /* 普通选项投影：黑色 */
-        user-select: none; cursor: pointer; transition: transform .2s ease, box-shadow .2s ease, background .25s ease, opacity .2s ease;
-        transform-origin: center; will-change: transform, box-shadow, background, opacity;
+        transition: none;
       }
-      .option:active { transform: scale(.98); }
-      .option.selected { background: linear-gradient(var(--sel-angle,160deg), var(--accent), var(--accent2)); color: #ffffff; box-shadow: 0 10px 24px rgba(47, 0, 255, 0.45);  /* 选中选项投影：蓝紫色 */ }
-      @media (prefers-reduced-motion: reduce) { .option { transition: none; } }
-      .option .top { font-weight: 800; font-size: 1.1rem; }
-      .option .bottom { font-size: 1rem; opacity: .7; filter: blur(2.0px); }
+    }
 
-      /* (reserved) spin keyframes for future use */
-      @keyframes cardRoll { from { rotate: 0deg; } to { rotate: 360deg; } }
+    .option .top {
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
 
-      .actions { position: relative; z-index: 1; margin-top: 18px; display: grid; place-items: center; }  /* actions 在最底层 */
-      .primary {
-        appearance: none; border: none; border-radius: 999px; padding: 12px 22px; font-weight: 800; cursor: pointer;
-        background: linear-gradient(160deg, var(--accent), var(--accent2)); color: #ffffff; font-size: 20px;
-        box-shadow: 0 12px 30px rgba(47, 0, 255, 0.35);  /* 蓝紫色投影 */
-        /* 其他颜色选项：
+    .option .bottom {
+      font-size: 1rem;
+      opacity: .7;
+      filter: blur(2.0px);
+    }
+
+    /* (reserved) spin keyframes for future use */
+    @keyframes cardRoll {
+      from {
+        rotate: 0deg;
+      }
+
+      to {
+        rotate: 360deg;
+      }
+    }
+
+    .actions {
+      position: relative;
+      z-index: 1;
+      margin-top: 18px;
+      display: grid;
+      place-items: center;
+    }
+
+    /* actions 在最底层 */
+    .primary {
+      appearance: none;
+      border: none;
+      border-radius: 999px;
+      padding: 12px 22px;
+      font-weight: 800;
+      cursor: pointer;
+      background: linear-gradient(160deg, var(--accent), var(--accent2));
+      color: #ffffff;
+      font-size: 20px;
+      box-shadow: 0 12px 30px rgba(47, 0, 255, 0.35);
+      /* 蓝紫色投影 */
+      /* 其他颜色选项：
            rgba(255, 0, 0, 0.35)      - 红色
            rgba(0, 128, 255, 0.35)    - 蓝色
            rgba(128, 0, 255, 0.35)    - 紫色
            rgba(0, 255, 128, 0.35)    - 绿色
            rgba(0, 0, 0, 0.35)        - 黑色（经典）
         */
-      }
-    </style>
-  </head>
-  <body>
-    <div class="wrap">
-      <div class="card" aria-labelledby="form-title">
-        <h1 id="form-title" class="headline">Welcome to U.S. Citizenship and Immigration $ervices</h1>
-        <p class="lead">This information may or may not affect your odds</p>
-        <p class="question" id="q">Applicant's Education Level Survey</p>
-        <div class="rail-wrap" aria-labelledby="q">
-          <div class="rail" id="rail" role="listbox" aria-label="Selection" tabindex="0"></div>
-        </div>
+    }
+  </style>
+</head>
 
-        <div class="actions">
-          <button id="confirm" class="primary" type="button">Confirm</button>
-        </div>
+  <body class="crt">
+  <div class="wrap">
+    <div class="card" aria-labelledby="form-title">
+      <h1 id="form-title" class="headline">Welcome to U.S. Citizenship and Immigration $ervices</h1>
+      <p class="lead">This information may or may not affect your odds</p>
+      <p class="question" id="q">Applicant's Education Level Survey</p>
+      <div class="rail-wrap" aria-labelledby="q">
+        <div class="rail" id="rail" role="listbox" aria-label="Selection" tabindex="0"></div>
+      </div>
+
+      <div class="actions">
+        <button id="confirm" class="primary" type="button">Confirm</button>
       </div>
     </div>
-    <!-- Anime.js for silky animations -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
-    <script>
-      const rail = document.getElementById('rail');
-      let items = [];
-      let selGradTarget = null; // track which card has gradient animation
-      const confirmBtn = document.getElementById('confirm');
-      // Debug: allow disabling animations via URL or localStorage
-      const __qs = new URLSearchParams(location.search);
-      // Default: animations OFF (disabled). Shift+D toggles on.
-      let DEBUG_NO_ANIM = true;
-      const lsFlag = localStorage.getItem('debugNoAnim');
-      if (lsFlag === '0') DEBUG_NO_ANIM = false; // enable if explicitly stored 0
-      if (lsFlag === '1') DEBUG_NO_ANIM = true;
-      const qNoAnim = __qs.get('noanim') ?? __qs.get('debugNoAnim');
-      if (qNoAnim === '0') DEBUG_NO_ANIM = false; // enable via URL
-      if (qNoAnim === '1') DEBUG_NO_ANIM = true;  // disable via URL
-      // Toggle with Shift + D and reload
-      window.addEventListener('keydown', (e) => {
-        if (e.shiftKey && (e.key === 'D' || e.key === 'd')) {
-          DEBUG_NO_ANIM = !DEBUG_NO_ANIM;
-          localStorage.setItem('debugNoAnim', DEBUG_NO_ANIM ? '1' : '0');
-          location.reload();
-        }
-      });
+  </div>
+  <!-- Anime.js for silky animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+  <script>
+    const rail = document.getElementById('rail');
+    let items = [];
+    let selGradTarget = null; // track which card has gradient animation
+    const confirmBtn = document.getElementById('confirm');
+    // Debug: allow disabling animations via URL or localStorage
+    const __qs = new URLSearchParams(location.search);
+    // Default: animations OFF (disabled). Shift+D toggles on.
+    let DEBUG_NO_ANIM = true;
+    const lsFlag = localStorage.getItem('debugNoAnim');
+    if (lsFlag === '0') DEBUG_NO_ANIM = false; // enable if explicitly stored 0
+    if (lsFlag === '1') DEBUG_NO_ANIM = true;
+    const qNoAnim = __qs.get('noanim') ?? __qs.get('debugNoAnim');
+    if (qNoAnim === '0') DEBUG_NO_ANIM = false; // enable via URL
+    if (qNoAnim === '1') DEBUG_NO_ANIM = true;  // disable via URL
+    // Toggle with Shift + D and reload
+    window.addEventListener('keydown', (e) => {
+      if (e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+        DEBUG_NO_ANIM = !DEBUG_NO_ANIM;
+        localStorage.setItem('debugNoAnim', DEBUG_NO_ANIM ? '1' : '0');
+        location.reload();
+      }
+    });
 
-      function centerOf(el) {
-        const r = el.getBoundingClientRect();
-        return r.left + r.width / 2;
+    function centerOf(el) {
+      const r = el.getBoundingClientRect();
+      return r.left + r.width / 2;
+    }
+    function nearestItem() {
+      const center = centerOf(rail);
+      let min = Infinity, best = null;
+      for (const el of items) {
+        const dist = Math.abs(centerOf(el) - center);
+        if (dist < min) { min = dist; best = el; }
       }
-      function nearestItem() {
-        const center = centerOf(rail);
-        let min = Infinity, best = null;
-        for (const el of items) {
-          const dist = Math.abs(centerOf(el) - center);
-          if (dist < min) { min = dist; best = el; }
+      return best;
+    }
+    function updateSelected() {
+      const center = centerOf(rail);
+      let best = null, min = Infinity;
+      items.forEach(el => {
+        const c = centerOf(el);
+        const dist = Math.abs(c - center);
+        if (dist < min) { min = dist; best = el; }
+        const influence = Math.max(0, 1 - dist / 260);
+        const scale = 1 + 0.08 * influence;
+        const elev = 6 + 12 * influence;
+        const opacity = 0.7 + 0.3 * influence;
+        el.style.transform = `scale(${scale})`;
+        el.style.boxShadow = `0 ${elev}px ${elev * 1.5}px rgba(0,0,0,${0.08 + 0.12 * influence})`;
+        el.style.opacity = String(opacity);
+      });
+      if (best) {
+        items.forEach(el => { el.classList.toggle('selected', el === best); el.setAttribute('aria-selected', el === best ? 'true' : 'false'); });
+        // Animate gradient angle on the selected card using anime.js (skip if debug disabled)
+        if (!DEBUG_NO_ANIM && window.anime && selGradTarget !== best) {
+          if (selGradTarget) {
+            try { anime.remove(selGradTarget); } catch (_) { }
+            selGradTarget.style.setProperty('--sel-angle', '160deg');
+          }
+          selGradTarget = best;
+          anime({
+            targets: selGradTarget,
+            '--sel-angle': ['140deg', '220deg'],
+            duration: 2000,
+            easing: 'easeInOutSine',
+            direction: 'alternate',
+            loop: true,
+          });
+        } else if (DEBUG_NO_ANIM) {
+          if (selGradTarget && window.anime) { try { anime.remove(selGradTarget); } catch (_) { } }
+          best.style.setProperty('--sel-angle', '160deg');
+          selGradTarget = null;
         }
-        return best;
       }
-      function updateSelected() {
-        const center = centerOf(rail);
-        let best = null, min = Infinity;
-        items.forEach(el => {
-          const c = centerOf(el);
-          const dist = Math.abs(c - center);
-          if (dist < min) { min = dist; best = el; }
-          const influence = Math.max(0, 1 - dist / 260);
-          const scale = 1 + 0.08 * influence;
-          const elev = 6 + 12 * influence;
-          const opacity = 0.7 + 0.3 * influence;
-          el.style.transform = `scale(${scale})`;
-          el.style.boxShadow = `0 ${elev}px ${elev*1.5}px rgba(0,0,0,${0.08 + 0.12*influence})`;
-          el.style.opacity = String(opacity);
-        });
+    }
+    let ticking = false;
+    rail.addEventListener('scroll', () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => { updateSelected(); ticking = false; });
+        ticking = true;
+      }
+    }, { passive: true });
+    window.addEventListener('resize', updateSelected);
+    // Extra scroll listener to auto-snap after user stops scrolling
+    let snapTimer = null;
+    rail.addEventListener('scroll', () => {
+      clearTimeout(snapTimer);
+      snapTimer = setTimeout(() => {
+        const best = (function () {
+          const center = centerOf(rail); let min = Infinity, pick = null; for (const el of items) { const d = Math.abs(centerOf(el) - center); if (d < min) { min = d; pick = el; } } return pick;
+        })();
         if (best) {
-          items.forEach(el => { el.classList.toggle('selected', el === best); el.setAttribute('aria-selected', el === best ? 'true' : 'false'); });
-          // Animate gradient angle on the selected card using anime.js (skip if debug disabled)
-          if (!DEBUG_NO_ANIM && window.anime && selGradTarget !== best) {
-            if (selGradTarget) {
-              try { anime.remove(selGradTarget); } catch(_) {}
-              selGradTarget.style.setProperty('--sel-angle', '160deg');
-            }
-            selGradTarget = best;
-            anime({
-              targets: selGradTarget,
-              '--sel-angle': ['140deg', '220deg'],
-              duration: 2000,
-              easing: 'easeInOutSine',
-              direction: 'alternate',
-              loop: true,
-            });
-          } else if (DEBUG_NO_ANIM) {
-            if (selGradTarget && window.anime) { try { anime.remove(selGradTarget); } catch(_) {} }
-            best.style.setProperty('--sel-angle', '160deg');
-            selGradTarget = null;
-          }
+          const target = best.offsetLeft - rail.clientWidth / 2 + best.clientWidth / 2;
+          rail.scrollTo({ left: target, behavior: 'smooth' });
         }
-      }
-      let ticking = false;
-      rail.addEventListener('scroll', () => {
-        if (!ticking) {
-          window.requestAnimationFrame(() => { updateSelected(); ticking = false; });
-          ticking = true;
-        }
-      }, { passive: true });
-      window.addEventListener('resize', updateSelected);
-      // Extra scroll listener to auto-snap after user stops scrolling
-      let snapTimer = null;
-      rail.addEventListener('scroll', () => {
-        clearTimeout(snapTimer);
-        snapTimer = setTimeout(() => {
-          const best = (function(){
-            const center = centerOf(rail); let min=Infinity, pick=null; for(const el of items){ const d=Math.abs(centerOf(el)-center); if(d<min){min=d; pick=el;} } return pick;})();
-          if (best) {
-            const target = best.offsetLeft - rail.clientWidth/2 + best.clientWidth/2;
-            rail.scrollTo({ left: target, behavior: 'smooth' });
-          }
-        }, 140);
-      }, { passive: true });
+      }, 140);
+    }, { passive: true });
 
-      function scrollItemIntoCenter(el, smooth=true) {
-        const target = el.offsetLeft - rail.clientWidth / 2 + el.clientWidth / 2;
-        rail.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'auto' });
-      }
+    function scrollItemIntoCenter(el, smooth = true) {
+      const target = el.offsetLeft - rail.clientWidth / 2 + el.clientWidth / 2;
+      rail.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'auto' });
+    }
 
-      // Entrance animation (anime.js): left->right auto-scroll with looping, stop in ~2s
-      function entranceAnimation() {
-        if (DEBUG_NO_ANIM || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
-          // Respect reduced motion: skip fancy entrance
-          const middle = items[Math.floor(items.length / 2)];
-          if (middle) scrollItemIntoCenter(middle, false);
+    // Entrance animation (anime.js): left->right auto-scroll with looping, stop in ~2s
+    function entranceAnimation() {
+      if (DEBUG_NO_ANIM || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+        // Respect reduced motion: skip fancy entrance
+        const middle = items[Math.floor(items.length / 2)];
+        if (middle) scrollItemIntoCenter(middle, false);
+        updateSelected();
+        return;
+      }
+      const D = 300; // total duration
+      const max = Math.max(0, rail.scrollWidth - rail.clientWidth);
+      if (max <= 0 || !window.anime) { // fallback
+        updateSelected();
+        return;
+      }
+      // Target: center the middle item rather than scroll to far right
+      const mid = items[Math.floor(items.length / 2)];
+      let target = mid ? (mid.offsetLeft - rail.clientWidth / 2 + mid.clientWidth / 2) : max / 2;
+      target = Math.max(0, Math.min(max, target));
+      const holder = { pos: 0 };
+      rail.scrollLeft = 0;
+      anime({
+        targets: holder,
+        pos: target,
+        duration: D,
+        easing: 'easeInOutSine',
+        update: () => {
+          rail.scrollLeft = holder.pos;
           updateSelected();
-          return;
-        }
-        const D = 300; // total duration
-        const max = Math.max(0, rail.scrollWidth - rail.clientWidth);
-        if (max <= 0 || !window.anime) { // fallback
-          updateSelected();
-          return;
-        }
-        // Target: center the middle item rather than scroll to far right
-        const mid = items[Math.floor(items.length / 2)];
-        let target = mid ? (mid.offsetLeft - rail.clientWidth/2 + mid.clientWidth/2) : max/2;
-        target = Math.max(0, Math.min(max, target));
-        const holder = { pos: 0 };
-        rail.scrollLeft = 0;
-        anime({
-          targets: holder,
-          pos: target,
-          duration: D,
-          easing: 'easeInOutSine',
-          update: () => {
-            rail.scrollLeft = holder.pos;
-            updateSelected();
-          },
-          complete: () => {
-            if (mid) scrollItemIntoCenter(mid, true);
-          }
-        });
-      }
-
-      // Drag to scroll for mouse (touch uses native momentum)
-      let isDown = false, dragMoved = false, startX = 0, startLeft = 0, pointerId = null;
-      rail.addEventListener('pointerdown', (e) => {
-        if (e.pointerType !== 'mouse') return; // let touch/pen be native
-        isDown = true; dragMoved = false; pointerId = e.pointerId;
-        startX = e.clientX; startLeft = rail.scrollLeft;
-        rail.setPointerCapture(pointerId);
-      });
-      rail.addEventListener('pointermove', (e) => {
-        if (!isDown) return;
-        const dx = e.clientX - startX;
-        if (Math.abs(dx) > 3) dragMoved = true;
-        rail.scrollLeft = startLeft - dx;
-      });
-      const endDrag = (e) => { if (!isDown) return; isDown = false; try { rail.releasePointerCapture(pointerId); } catch(_){} const best = (function(){
-        const center = centerOf(rail); let min=Infinity, pick=null; for(const el of items){ const d=Math.abs(centerOf(el)-center); if(d<min){min=d; pick=el;} } return pick;})()
-        ; if (best) { const target = best.offsetLeft - rail.clientWidth/2 + best.clientWidth/2; rail.scrollTo({ left: target, behavior: 'smooth' }); } };
-      rail.addEventListener('pointerup', endDrag);
-      rail.addEventListener('pointercancel', endDrag);
-
-      // Click to center (ignore if it was a drag)
-      function bindItemClicks() {
-        items.forEach(el => el.addEventListener('click', (ev) => {
-          if (dragMoved) return;
-          scrollItemIntoCenter(el);
-        }));
-      }
-
-      // Keyboard: left/right to move selection
-      rail.addEventListener('keydown', (e) => {
-        const idx = items.findIndex(el => el.classList.contains('selected'));
-        if (e.key === 'ArrowRight' && idx < items.length - 1) { e.preventDefault(); scrollItemIntoCenter(items[idx + 1]); }
-        if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); scrollItemIntoCenter(items[idx - 1]); }
-      });
-
-      // Data for steps
-      const Q1 = [
-        { value: 'Below Kindergarten', top: 'Below Kindergarten' },
-        { value: 'Elementary School', top: 'Elementary School' },
-        { value: 'Middle School', top: 'Middle School' },
-        { value: 'High School', top: 'High School' },
-        { value: "Bachelor's", top: "Bachelor's" },
-        { value: "Master's", top: "Master's" },
-        { value: 'PhD', top: 'PhD' },
-        { value: 'Above PhD', top: 'Above PhD' },
-      ];
-      const Q2 = [
-        { value: 'L1', top: 'Entry / Beginner', bottom: 'below $80,000' },
-        { value: 'L2', top: 'Qualified',        bottom: '$80,000 – $120,000' },
-        { value: 'L3', top: 'Experienced',      bottom: '$120,000 – $160,000' },
-        { value: 'L4', top: 'Fully Competent',  bottom: '$160,000 – $220,000' },
-        { value: 'L5', top: 'Expert',           bottom: 'above $220,000' },
-      ];
-      const Q3 = [
-        { value: 'STEM',     top: 'STEM' },
-        { value: 'Design',   top: 'Design' },
-        { value: 'Research', top: 'Research' },
-        { value: 'Finance',  top: 'Finance' },
-        { value: 'Other',    top: 'Other' },
-      ];
-      const Q4 = [
-        { value: 'Yes', top: 'Yes, speed me' },
-        { value: 'No',  top: "No, I'll wait" },
-      ];
-
-      function renderOptions(data) {
-        rail.innerHTML = data.map(o => (
-          `<div class="option" role="option" aria-selected="false" data-value="${o.value}" data-bottom="${o.bottom || ''}">` +
-            `<div class="top">${o.top}</div>` +
-            (o.bottom ? `<div class="bottom">${o.bottom}</div>` : '') +
-          `</div>`
-        )).join('');
-        items = Array.from(rail.querySelectorAll('.option'));
-        bindItemClicks();
-        // Run entrance animation when options appear
-        entranceAnimation();
-      }
-
-      // Initialize step 1
-      let step = 1;
-      document.getElementById('q').textContent = "Applicant's Education Level";
-      rail.setAttribute('aria-label', 'Education Level');
-      renderOptions(Q1);
-
-      confirmBtn.addEventListener('click', () => {
-        const sel = items.find(el => el.classList.contains('selected'));
-        if (!sel) return;
-        if (step === 1) {
-          const education = sel.dataset.value || '';
-          try {
-            const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
-            localStorage.setItem('playerInfo', JSON.stringify({ ...prev, educationLevel: education, ts: Date.now() }));
-          } catch (_) {}
-          // Move to step 2: Wage Level
-          step = 2;
-          document.getElementById('q').textContent = 'Wage Level System';
-          rail.setAttribute('aria-label', 'Wage Level');
-          renderOptions(Q2);
-        } else if (step === 2) {
-          const wageLevel = sel.dataset.value || '';
-          const wageRange = sel.dataset.bottom || '';
-          try {
-            const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
-            localStorage.setItem('playerInfo', JSON.stringify({ ...prev, wageLevel, wageRange, ts: Date.now() }));
-          } catch (_) {}
-          // Move to step 3: Occupation Category
-          step = 3;
-          document.getElementById('q').textContent = 'Current Occupation Category';
-          rail.setAttribute('aria-label', 'Occupation Category');
-          renderOptions(Q3);
-        } else if (step === 3) {
-          const occupation = sel.dataset.value || '';
-          try {
-            const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
-            localStorage.setItem('playerInfo', JSON.stringify({ ...prev, occupationCategory: occupation, ts: Date.now() }));
-          } catch (_) {}
-          // Move to step 4: Premium Processing
-          step = 4;
-          document.getElementById('q').textContent = 'Premium Processing?';
-          rail.setAttribute('aria-label', 'Premium Processing');
-          renderOptions(Q4);
-        } else {
-          const premium = sel.dataset.value || '';
-          try {
-            const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
-            localStorage.setItem('playerInfo', JSON.stringify({ ...prev, premiumProcessing: premium, ts: Date.now() }));
-          } catch (_) {}
-          window.location.href = './confirm.html';
+        },
+        complete: () => {
+          if (mid) scrollItemIntoCenter(mid, true);
         }
       });
-    </script>
-  </body>
-  </html>
+    }
+
+    // Drag to scroll for mouse (touch uses native momentum)
+    let isDown = false, dragMoved = false, startX = 0, startLeft = 0, pointerId = null;
+    rail.addEventListener('pointerdown', (e) => {
+      if (e.pointerType !== 'mouse') return; // let touch/pen be native
+      isDown = true; dragMoved = false; pointerId = e.pointerId;
+      startX = e.clientX; startLeft = rail.scrollLeft;
+      rail.setPointerCapture(pointerId);
+    });
+    rail.addEventListener('pointermove', (e) => {
+      if (!isDown) return;
+      const dx = e.clientX - startX;
+      if (Math.abs(dx) > 3) dragMoved = true;
+      rail.scrollLeft = startLeft - dx;
+    });
+    const endDrag = (e) => {
+      if (!isDown) return; isDown = false; try { rail.releasePointerCapture(pointerId); } catch (_) { } const best = (function () {
+        const center = centerOf(rail); let min = Infinity, pick = null; for (const el of items) { const d = Math.abs(centerOf(el) - center); if (d < min) { min = d; pick = el; } } return pick;
+      })()
+        ; if (best) { const target = best.offsetLeft - rail.clientWidth / 2 + best.clientWidth / 2; rail.scrollTo({ left: target, behavior: 'smooth' }); } setTimeout(() => { dragMoved = false; }, 10);
+    };
+    rail.addEventListener('pointerup', endDrag);
+    rail.addEventListener('pointercancel', endDrag);
+
+
+
+
+    // Click to center (ignore if it was a drag)
+    function bindItemClicks() {
+      items.forEach(el => el.addEventListener('click', (ev) => {
+        if (dragMoved) return;
+        scrollItemIntoCenter(el);
+      }));
+    }
+
+    // Keyboard: left/right to move selection
+    rail.addEventListener('keydown', (e) => {
+      const idx = items.findIndex(el => el.classList.contains('selected'));
+      if (e.key === 'ArrowRight' && idx < items.length - 1) { e.preventDefault(); scrollItemIntoCenter(items[idx + 1]); }
+      if (e.key === 'ArrowLeft' && idx > 0) { e.preventDefault(); scrollItemIntoCenter(items[idx - 1]); }
+    });
+
+    // Data for steps
+    const Q1 = [
+      { value: 'Below Kindergarten', top: 'Below Kindergarten' },
+      { value: 'Elementary School', top: 'Elementary School' },
+      { value: 'Middle School', top: 'Middle School' },
+      { value: 'High School', top: 'High School' },
+      { value: "Bachelor's", top: "Bachelor's" },
+      { value: "Master's", top: "Master's" },
+      { value: 'PhD', top: 'PhD' },
+      { value: 'Above PhD', top: 'Above PhD' },
+    ];
+    const Q2 = [
+      { value: 'L1', top: 'Entry / Beginner', bottom: 'below $80,000' },
+      { value: 'L2', top: 'Qualified', bottom: '$80,000 – $120,000' },
+      { value: 'L3', top: 'Experienced', bottom: '$120,000 – $160,000' },
+      { value: 'L4', top: 'Fully Competent', bottom: '$160,000 – $220,000' },
+      { value: 'L5', top: 'Expert', bottom: 'above $220,000' },
+    ];
+    const Q3 = [
+      { value: 'STEM', top: 'STEM' },
+      { value: 'Design', top: 'Design' },
+      { value: 'Research', top: 'Research' },
+      { value: 'Finance', top: 'Finance' },
+      { value: 'Other', top: 'Other' },
+    ];
+    const Q4 = [
+      { value: 'Yes', top: 'Yes, speed me' },
+      { value: 'No', top: "No, I'll wait" },
+    ];
+
+    function renderOptions(data) {
+      rail.innerHTML = data.map(o => (
+        `<div class="option" role="option" aria-selected="false" data-value="${o.value}" data-bottom="${o.bottom || ''}">` +
+        `<div class="top">${o.top}</div>` +
+        (o.bottom ? `<div class="bottom">${o.bottom}</div>` : '') +
+        `</div>`
+      )).join('');
+      items = Array.from(rail.querySelectorAll('.option'));
+      bindItemClicks();
+      // Run entrance animation when options appear
+      entranceAnimation();
+    }
+
+    // Initialize step 1
+    let step = 1;
+    document.getElementById('q').textContent = "Applicant's Education Level";
+    rail.setAttribute('aria-label', 'Education Level');
+    renderOptions(Q1);
+
+    confirmBtn.addEventListener('click', () => {
+      const sel = items.find(el => el.classList.contains('selected'));
+      if (!sel) return;
+      if (step === 1) {
+        const education = sel.dataset.value || '';
+        try {
+          const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
+          localStorage.setItem('playerInfo', JSON.stringify({ ...prev, educationLevel: education, ts: Date.now() }));
+        } catch (_) { }
+        // Move to step 2: Wage Level
+        step = 2;
+        document.getElementById('q').textContent = 'Wage Level System';
+        rail.setAttribute('aria-label', 'Wage Level');
+        renderOptions(Q2);
+      } else if (step === 2) {
+        const wageLevel = sel.dataset.value || '';
+        const wageRange = sel.dataset.bottom || '';
+        try {
+          const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
+          localStorage.setItem('playerInfo', JSON.stringify({ ...prev, wageLevel, wageRange, ts: Date.now() }));
+        } catch (_) { }
+        // Move to step 3: Occupation Category
+        step = 3;
+        document.getElementById('q').textContent = 'Current Occupation Category';
+        rail.setAttribute('aria-label', 'Occupation Category');
+        renderOptions(Q3);
+      } else if (step === 3) {
+        const occupation = sel.dataset.value || '';
+        try {
+          const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
+          localStorage.setItem('playerInfo', JSON.stringify({ ...prev, occupationCategory: occupation, ts: Date.now() }));
+        } catch (_) { }
+        // Move to step 4: Premium Processing
+        step = 4;
+        document.getElementById('q').textContent = 'Premium Processing?';
+        rail.setAttribute('aria-label', 'Premium Processing');
+        renderOptions(Q4);
+      } else {
+        const premium = sel.dataset.value || '';
+        try {
+          const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
+          localStorage.setItem('playerInfo', JSON.stringify({ ...prev, premiumProcessing: premium, ts: Date.now() }));
+        } catch (_) { }
+        window.location.href = './confirm.html';
+      }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+/* Global CRT-style overlay: scanlines, pixel grid, slight aberration */
+:root {
+  --crt-scanline-alpha: 0.12;
+  --crt-grid-alpha: 0.06;
+  --crt-vignette-alpha: 0.40;
+  --crt-flicker-alpha: 0.03;
+  --crt-aberration: 1px;
+  /* New tuning knobs */
+  --crt-line-thickness: 1px;   /* thickness of scan/grid lines */
+  --crt-scanline-step: 5px;    /* vertical spacing cycle (rows) */
+  --crt-grid-step: 5px;        /* horizontal spacing cycle (cols) */
+}
+
+html.crt, body.crt { filter: contrast(1.08) saturate(1.12) brightness(0.98); }
+
+/* Overlay using fixed pseudo element so it covers the whole viewport */
+html.crt::before, body.crt::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  /* Combine scanlines (horizontal), pixel columns (vertical), and a subtle vignette */
+  background-image:
+    /* horizontal scanlines */
+    repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,var(--crt-scanline-alpha)) 0,
+      rgba(0,0,0,var(--crt-scanline-alpha)) var(--crt-line-thickness),
+      transparent var(--crt-line-thickness),
+      transparent var(--crt-scanline-step)
+    ),
+    /* vertical grid lines */
+    repeating-linear-gradient(
+      to right,
+      rgba(0,0,0,var(--crt-grid-alpha)) 0,
+      rgba(0,0,0,var(--crt-grid-alpha)) var(--crt-line-thickness),
+      transparent var(--crt-line-thickness),
+      transparent var(--crt-grid-step)
+    ),
+    /* vignette */
+    radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,var(--crt-vignette-alpha)) 100%);
+  mix-blend-mode: multiply;
+  animation: crt-flicker 6s infinite steps(2);
+}
+
+@keyframes crt-flicker {
+  0%   { opacity: 1; }
+  50%  { opacity: calc(1 - var(--crt-flicker-alpha)); }
+  100% { opacity: 1; }
+}
+
+/* Subtle chromatic aberration on text */
+html.crt, body.crt {
+  text-shadow:
+    var(--crt-aberration) 0 0 rgba(255,0,0,0.25),
+    calc(-1 * var(--crt-aberration)) 0 0 rgba(0,255,255,0.25);
+}
+
+/* Avoid heavy shadows on interactive 3D elements if needed: override opt-outs */
+.no-crt-aberration { text-shadow: none !important; }
