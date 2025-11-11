@@ -47,15 +47,29 @@
       .loading-text { text-align: center; color: #eaf1ff; margin-top: 12px; opacity: .9; font-size: clamp(18px, 3.2vmin, 22px); }
 
       /* Bottom: terms */
-      .bottom { display: grid; place-items: center; padding: 0; }
+      .bottom {
+        display: grid;
+        place-items: center;
+        /* Ensure horizontal spacing even on very narrow viewports */
+        padding: 0 clamp(12px, 4vw, 24px);
+      }
+      /* Keep sections centered without overlapping */
+      @media (min-width: 768px) and (min-height: 600px) {
+        .page { gap: 2.4vh; }
+        .bottom { margin-top: 0; }
+      }
       .card {
-        width: min(92vw, 900px); background: var(--panel); border-radius: 16px; padding: clamp(18px, 4vw, 28px);
+        /* Use container width so padding on .bottom is respected (no overflow on narrow screens) */
+        width: min(100%, 900px); background: var(--panel); border-radius: 16px; padding: clamp(18px, 4vw, 28px);
         box-shadow: 0 24px 60px rgba(0,0,0,.25); color: var(--text);
       }
-      .card h2 { margin: 0 0 12px; font-size: clamp(20px, 4.8vw, 26px); }
-      .terms { margin: 0; padding-left: 1.2em; line-height: 1.6; font-size: 1.05rem; }
+      .card .inner { max-width: 720px; margin: 0 auto; text-align: center; }
+      .card h2 { margin: 0 0 12px; font-size: clamp(20px, 4.8vw, 26px); text-align: center; }
+      /* Center the list block, keep each item's text left-aligned */
+      .terms { margin: 0 auto; padding-left: 1.2em; line-height: 1.6; font-size: 1.05rem; display: inline-block; text-align: left; }
       .agree {
-        display: flex; align-items: center; gap: 10px; margin-top: 14px; font-weight: 700;
+        display: flex; align-items: center; justify-content: center; width: 100%;
+        gap: 10px; margin-top: 14px; font-weight: 700; text-align: center;
       }
       .agree input { width: 20px; height: 20px; }
       .helper { color: #5c6a99; font-size: 1rem; margin-top: 4px; }
@@ -83,13 +97,15 @@
 
       <section class="bottom">
         <div class="card">
-          <h2>Confirmation</h2>
-          <ul class="terms">
-            <li>I acknowledge the information I provided may be used.</li>
-            <li>I believe the system will be as fair, transparent, and procedurally neutral as possible.</li>
-            <li>I understand paying more may or may not improve my odds.</li>
-          </ul>
-          <label class="agree"><input id="agree" type="checkbox" /> I have read and agree to the above.</label>
+          <div class="inner">
+            <h2>Confirmation</h2>
+            <ul class="terms">
+              <li>I acknowledge the information I provided may be used.</li>
+              <li>I believe the system will be as fair, transparent, and procedurally neutral as possible.</li>
+              <li>I understand paying more may or may not improve my odds.</li>
+            </ul>
+            <label class="agree"><input id="agree" type="checkbox" /> I have read and agree to the above.</label>
+          </div>
         </div>
       </section>
     </div>
