@@ -51,7 +51,7 @@ const tickInterval = 80; // Interval for symbol updates
 // detect different states
 let canCoin = true;
 let isSpinning = false;
-let canSpin = false; // set true when coin detected via WS/HTTP
+let canSpin = true; // spin is no longer gated by coin
 let intervalHandles = [];
 
 function chooseRandomImage() {
@@ -135,7 +135,7 @@ function handleKeydown(event) {
   }
 }
 
-spinButton.addEventListener("click", startSpin);
+if (spinButton) spinButton.addEventListener("click", startSpin);
 window.addEventListener("keydown", handleKeydown);
 
 // Preload each reel with a symbol so they are never empty
@@ -156,18 +156,16 @@ let lastPiPressed = false; // for edge detection
 function handlePiState(state) {
   if (!state) return;
 
-  // Handle coin pulse: when coin=true, allow spin and update hint text
-  if (typeof state.coin === 'boolean' && state.coin&&canCoin) {
-    canSpin = true;
-    canCoin = false; // prevent multiple coins until reset
-    if (coinHint) coinHint.textContent = "Now you can spin";
+  // Handle coin pulse: keep hint but no longer gate spinning
+  if (typeof state.coin === 'boolean' && state.coin && canCoin) {
+    if (coinHint) coinHint.textContent = "Coin detected";
+    canCoin = false; // basic debounce for hint
   }
 
   // Handle button press with rising edge: not pressed -> pressed
-  if (typeof state.pressed === 'boolean'&&canSpin) {
+  if (typeof state.pressed === 'boolean') {
     if (state.pressed && !lastPiPressed) {
       startSpin();
-      canSpin = false; // require new coin for next spin
     }
     lastPiPressed = !!state.pressed;
   }

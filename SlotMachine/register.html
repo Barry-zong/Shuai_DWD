@@ -494,7 +494,11 @@
           const prev = JSON.parse(localStorage.getItem('playerInfo') || '{}');
           localStorage.setItem('playerInfo', JSON.stringify({ ...prev, premiumProcessing: premium, ts: Date.now() }));
         } catch (_) { }
-        window.location.href = './confirm.html';
+        if (premium.toLowerCase().startsWith('yes')) {
+          window.location.href = './coins.html';
+        } else {
+          window.location.href = './confirm.html';
+        }
       }
     });
   </script>

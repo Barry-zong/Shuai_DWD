@@ -57,6 +57,12 @@
     </div>
 
     <script>
+      // Clear coin count and registration answers whenever screensaver opens
+      try {
+        localStorage.removeItem('premiumCoins');
+        localStorage.removeItem('playerInfo');
+        localStorage.removeItem('lastSpin');
+      } catch (_) {}
       const elLogo = document.getElementById('logo');
       const elFallback = document.getElementById('fallback');
       // 如果图片加载失败，则使用方块占位
