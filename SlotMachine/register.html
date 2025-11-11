@@ -57,10 +57,13 @@
         transform-origin: center; will-change: transform, box-shadow, background, opacity;
       }
       .option:active { transform: scale(.98); }
-      .option.selected { background: linear-gradient(160deg, var(--accent), var(--accent2)); color: #ffffff; box-shadow: 0 10px 24px rgba(47, 0, 255, 0.45);  /* 选中选项投影：蓝紫色 */ }
+      .option.selected { background: linear-gradient(var(--sel-angle,160deg), var(--accent), var(--accent2)); color: #ffffff; box-shadow: 0 10px 24px rgba(47, 0, 255, 0.45);  /* 选中选项投影：蓝紫色 */ }
       @media (prefers-reduced-motion: reduce) { .option { transition: none; } }
       .option .top { font-weight: 800; font-size: 1.1rem; }
       .option .bottom { font-size: 1rem; opacity: .7; filter: blur(2.0px); }
+
+      /* (reserved) spin keyframes for future use */
+      @keyframes cardRoll { from { rotate: 0deg; } to { rotate: 360deg; } }
 
       .actions { position: relative; z-index: 1; margin-top: 18px; display: grid; place-items: center; }  /* actions 在最底层 */
       .primary {
@@ -92,10 +95,31 @@
         </div>
       </div>
     </div>
+    <!-- Anime.js for silky animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
     <script>
       const rail = document.getElementById('rail');
       let items = [];
+      let selGradTarget = null; // track which card has gradient animation
       const confirmBtn = document.getElementById('confirm');
+      // Debug: allow disabling animations via URL or localStorage
+      const __qs = new URLSearchParams(location.search);
+      // Default: animations OFF (disabled). Shift+D toggles on.
+      let DEBUG_NO_ANIM = true;
+      const lsFlag = localStorage.getItem('debugNoAnim');
+      if (lsFlag === '0') DEBUG_NO_ANIM = false; // enable if explicitly stored 0
+      if (lsFlag === '1') DEBUG_NO_ANIM = true;
+      const qNoAnim = __qs.get('noanim') ?? __qs.get('debugNoAnim');
+      if (qNoAnim === '0') DEBUG_NO_ANIM = false; // enable via URL
+      if (qNoAnim === '1') DEBUG_NO_ANIM = true;  // disable via URL
+      // Toggle with Shift + D and reload
+      window.addEventListener('keydown', (e) => {
+        if (e.shiftKey && (e.key === 'D' || e.key === 'd')) {
+          DEBUG_NO_ANIM = !DEBUG_NO_ANIM;
+          localStorage.setItem('debugNoAnim', DEBUG_NO_ANIM ? '1' : '0');
+          location.reload();
+        }
+      });
 
       function centerOf(el) {
         const r = el.getBoundingClientRect();
@@ -127,6 +151,26 @@
         });
         if (best) {
           items.forEach(el => { el.classList.toggle('selected', el === best); el.setAttribute('aria-selected', el === best ? 'true' : 'false'); });
+          // Animate gradient angle on the selected card using anime.js (skip if debug disabled)
+          if (!DEBUG_NO_ANIM && window.anime && selGradTarget !== best) {
+            if (selGradTarget) {
+              try { anime.remove(selGradTarget); } catch(_) {}
+              selGradTarget.style.setProperty('--sel-angle', '160deg');
+            }
+            selGradTarget = best;
+            anime({
+              targets: selGradTarget,
+              '--sel-angle': ['140deg', '220deg'],
+              duration: 2000,
+              easing: 'easeInOutSine',
+              direction: 'alternate',
+              loop: true,
+            });
+          } else if (DEBUG_NO_ANIM) {
+            if (selGradTarget && window.anime) { try { anime.remove(selGradTarget); } catch(_) {} }
+            best.style.setProperty('--sel-angle', '160deg');
+            selGradTarget = null;
+          }
         }
       }
       let ticking = false;
@@ -154,6 +198,42 @@
       function scrollItemIntoCenter(el, smooth=true) {
         const target = el.offsetLeft - rail.clientWidth / 2 + el.clientWidth / 2;
         rail.scrollTo({ left: target, behavior: smooth ? 'smooth' : 'auto' });
+      }
+
+      // Entrance animation (anime.js): left->right auto-scroll with looping, stop in ~2s
+      function entranceAnimation() {
+        if (DEBUG_NO_ANIM || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches)) {
+          // Respect reduced motion: skip fancy entrance
+          const middle = items[Math.floor(items.length / 2)];
+          if (middle) scrollItemIntoCenter(middle, false);
+          updateSelected();
+          return;
+        }
+        const D = 300; // total duration
+        const max = Math.max(0, rail.scrollWidth - rail.clientWidth);
+        if (max <= 0 || !window.anime) { // fallback
+          updateSelected();
+          return;
+        }
+        // Target: center the middle item rather than scroll to far right
+        const mid = items[Math.floor(items.length / 2)];
+        let target = mid ? (mid.offsetLeft - rail.clientWidth/2 + mid.clientWidth/2) : max/2;
+        target = Math.max(0, Math.min(max, target));
+        const holder = { pos: 0 };
+        rail.scrollLeft = 0;
+        anime({
+          targets: holder,
+          pos: target,
+          duration: D,
+          easing: 'easeInOutSine',
+          update: () => {
+            rail.scrollLeft = holder.pos;
+            updateSelected();
+          },
+          complete: () => {
+            if (mid) scrollItemIntoCenter(mid, true);
+          }
+        });
       }
 
       // Drag to scroll for mouse (touch uses native momentum)
@@ -230,9 +310,8 @@
         )).join('');
         items = Array.from(rail.querySelectorAll('.option'));
         bindItemClicks();
-        const initial = items[Math.floor(items.length / 2)];
-        scrollItemIntoCenter(initial, false);
-        updateSelected();
+        // Run entrance animation when options appear
+        entranceAnimation();
       }
 
       // Initialize step 1
