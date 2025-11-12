@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -21,7 +21,7 @@
       height: 100%;
       margin: 0;
       overflow-y: hidden;
-      /* 去掉右侧垂直滚动条 */
+      /* 去掉右侧垂直滚动�?*/
       background: radial-gradient(circle at 50% -20%, #002fcb 0%, #70b3ff 60%, #004e83 100%);
       font-family: "Segoe UI", "PingFang SC", "Hiragino San GB", sans-serif;
     }
@@ -30,9 +30,9 @@
       min-height: 100vh;
       /* 回退 */
       min-height: 100svh;
-      /* 小视口 */
+      /* 小视�?*/
       min-height: 100dvh;
-      /* 动态视口 */
+      /* 动态视�?*/
       display: grid;
       place-items: center;
       padding: 4vh 2vw;
@@ -40,7 +40,7 @@
     }
 
     .card {
-      width: min(96vw, 780px);
+      width: clamp(320px, 60vw, 720px); margin-left: auto; margin-right: auto;
       background: var(--panel);
       color: var(--text);
       border-radius: 16px;
@@ -77,8 +77,8 @@
       z-index: 2;
     }
 
-    /* 确保 rail 在上层 */
-    /* 移除中心指示线
+    /* 确保 rail 在上�?*/
+    /* 移除中心指示�?
       .rail-wrap::after {
         content: ""; position: absolute; left: 50%; top: 0; bottom: 0; width: 2px; transform: translateX(-1px);
         background: linear-gradient(180deg, transparent, #99a8dd 40%, #99a8dd 60%, transparent);
@@ -88,7 +88,7 @@
     .rail {
       position: relative;
       z-index: 2;
-      /* rail 本身也需要 z-index */
+      /* rail 本身也需�?z-index */
       display: flex;
       gap: 14px;
       overflow-x: auto;
@@ -97,9 +97,9 @@
       scroll-snap-stop: always;
       padding: 16px 50%;
       margin: 0;
-      /* 让手指直接在选项区滑动，隐藏滚动条 */
+      /* 让手指直接在选项区滑动，隐藏滚动�?*/
       -webkit-overflow-scrolling: touch;
-      /* iOS 惯性 */
+      /* iOS 惯�?*/
       touch-action: pan-x;
       /* 允许横向滑动 */
       scrollbar-width: none;
@@ -125,7 +125,7 @@
       font-weight: 700;
       scroll-snap-align: center;
       box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
-      /* 普通选项投影：黑色 */
+      /* 普通选项投影：黑�?*/
       user-select: none;
       cursor: pointer;
       transition: transform .2s ease, box-shadow .2s ease, background .25s ease, opacity .2s ease;
@@ -192,8 +192,8 @@
       color: #ffffff;
       font-size: 20px;
       box-shadow: 0 12px 30px rgba(47, 0, 255, 0.35);
-      /* 蓝紫色投影 */
-      /* 其他颜色选项：
+      /* 蓝紫色投�?*/
+      /* 其他颜色选项�?
            rgba(255, 0, 0, 0.35)      - 红色
            rgba(0, 128, 255, 0.35)    - 蓝色
            rgba(128, 0, 255, 0.35)    - 紫色
@@ -415,9 +415,9 @@
     ];
     const Q2 = [
       { value: 'L1', top: 'Entry / Beginner', bottom: 'below $80,000' },
-      { value: 'L2', top: 'Qualified', bottom: '$80,000 – $120,000' },
-      { value: 'L3', top: 'Experienced', bottom: '$120,000 – $160,000' },
-      { value: 'L4', top: 'Fully Competent', bottom: '$160,000 – $220,000' },
+      { value: 'L2', top: 'Qualified', bottom: '$80,000 �?$120,000' },
+      { value: 'L3', top: 'Experienced', bottom: '$120,000 �?$160,000' },
+      { value: 'L4', top: 'Fully Competent', bottom: '$160,000 �?$220,000' },
       { value: 'L5', top: 'Expert', bottom: 'above $220,000' },
     ];
     const Q3 = [
@@ -505,3 +505,5 @@
 </body>
 
 </html>
+
+

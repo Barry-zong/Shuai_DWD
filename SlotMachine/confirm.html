@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -60,7 +60,7 @@
       }
       .card {
         /* Use container width so padding on .bottom is respected (no overflow on narrow screens) */
-        width: min(100%, 900px); background: var(--panel); border-radius: 16px; padding: clamp(18px, 4vw, 28px);
+        width: clamp(320px, 60vw, 720px); max-width: 720px; margin-left: auto; margin-right: auto;; background: var(--panel); border-radius: 16px; padding: clamp(18px, 4vw, 28px);
         box-shadow: 0 24px 60px rgba(0,0,0,.25); color: var(--text);
       }
       .card .inner { max-width: 720px; margin: 0 auto; text-align: center; }
@@ -91,7 +91,7 @@
             <div class="bar-block"></div>
             <div class="bar-block"></div>
           </div>
-          <div class="loading-text">Preparing your spin…</div>
+          <div class="loading-text">Preparing your spin�?/div>
         </div>
       </section>
 
@@ -118,10 +118,10 @@
       // 复选框点击事件
       agree.addEventListener('change', (e) => {
         if (e.target.checked) {
-          // 禁用复选框，防止重复点击
+          // 禁用复选框，防止重复点�?
           agree.disabled = true;
 
-          // 显示进度条
+          // 显示进度�?
           progress.classList.add('active');
 
           // 延迟一下再开始填充，让用户看到进度条出现
@@ -133,7 +133,7 @@
         }
       });
 
-      // 开始加载动画
+      // 开始加载动�?
       function startLoading() {
         blocks.forEach((block, index) => {
           setTimeout(() => {
@@ -144,11 +144,13 @@
             if (index === blocks.length - 1) {
               setTimeout(() => {
                 window.location.href = './spin.html';
-              }, 500); // 最后一个块填充后等待500ms再跳转
+              }, 500); // 最后一个块填充后等�?00ms再跳�?
             }
-          }, index * 300); // 每个块间隔300ms
+          }, index * 300); // 每个块间�?00ms
         });
       }
     </script>
   </body>
   </html>
+
+

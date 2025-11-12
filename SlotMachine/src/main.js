@@ -53,6 +53,7 @@ let canCoin = true;
 let isSpinning = false;
 let canSpin = true; // spin is no longer gated by coin
 let intervalHandles = [];
+let hasSpunOnce = false;
 
 function chooseRandomImage() {
   const index = Math.floor(Math.random() * SYMBOL_IMAGES.length);
@@ -67,10 +68,11 @@ function applyImage(reel, image) {
 }
 
 function startSpin() {
-  if (isSpinning) {
+  if (isSpinning || hasSpunOnce) {
     return;
   }
   isSpinning = true;
+  hasSpunOnce = true;
   statusOutput.textContent = "Good luck!";
   intervalHandles = [];
 

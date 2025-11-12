@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -7,10 +7,17 @@
     <link rel="stylesheet" href="./src/crt.css" />
     <style>
       :root { --blue:#0b64d8; --panel:#ffffff; --text:#0f1426; }
-      html, body { height: 100%; margin: 0; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
+      html, body { height: 100%; margin: 0; overflow: hidden; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
       body { background: radial-gradient(circle at 50% -20%, #3e86ee 0%, var(--blue) 60%, #053a91 100%); }
-      .wrap { min-height: 100dvh; display: grid; place-items: center; padding: 4vh 2vw; }
-      .card { width: min(92vw, 900px); background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 28px); text-align: center; }
+      .wrap {
+        min-height: 100dvh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 4vh 2vw;
+        box-sizing: border-box;
+      }
+      .card { width: clamp(320px, 60vw, 720px); max-width: 720px; margin-left: auto; margin-right: auto;; background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 28px); text-align: center; }
       .title { margin: 0 0 8px; font-size: clamp(26px, 5.5vw, 36px); font-weight: 800; }
       .items { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; margin: 12px 0 4px; }
       .pill { min-width: 140px; padding: 12px 16px; border-radius: 12px; background: #eef2ff; font-weight: 700; box-shadow: 0 6px 18px rgba(0,0,0,.08); }
@@ -25,7 +32,7 @@
     <div class="wrap">
       <div class="card">
         <h1 class="title">Spin Result</h1>
-        <div id="status" class="result">Loading…</div>
+        <div id="status" class="result">Loading�?/div>
         <p class="hint" id="sub">Please wait</p>
         <div class="items" id="items"></div>
         <div class="actions">
@@ -45,7 +52,7 @@
           list.innerHTML = items.map(t => `<div class="pill">${String(t)}</div>`).join('');
           const win = !!data.win;
           document.getElementById('status').textContent = win ? 'Jackpot!' : 'Thanks for playing';
-          document.getElementById('sub').textContent = win ? 'All three matched — congrats!' : 'Your symbols are shown below.';
+          document.getElementById('sub').textContent = win ? 'All three matched �?congrats!' : 'Your symbols are shown below.';
         } catch (e) {
           document.getElementById('status').textContent = 'No result';
           document.getElementById('sub').textContent = 'Spin to see a result.';
@@ -54,4 +61,5 @@
     </script>
   </body>
   </html>
+
 

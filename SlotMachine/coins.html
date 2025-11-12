@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="./src/crt.css" />
     <style>
       :root { --blue:#0b64d8; --panel:#ffffff; --text:#0f1426; }
-      html, body { height: 100%; margin: 0; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
+      html, body { height: 100%; margin: 0; overflow: hidden; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
       body { background: radial-gradient(circle at 50% -20%, #3e86ee 0%, var(--blue) 60%, #053a91 100%); }
       .wrap { min-height: 100dvh; display: grid; place-items: center; padding: 4vh 2vw; }
-      .card { width: min(92vw, 900px); background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 28px); text-align: center; }
+      .card { width: clamp(320px, 60vw, 720px); max-width: 720px; margin-left: auto; margin-right: auto;; background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 28px); text-align: center; }
       .title { margin: 0 0 6px; font-size: clamp(24px, 5.2vw, 32px); font-weight: 800; }
       .lead { margin: 0 0 16px; color: #334275; }
       .count { font-size: clamp(40px, 10vmin, 72px); font-weight: 900; letter-spacing: 2px; margin: 6px 0 2px; }
@@ -26,7 +26,7 @@
         <h1 class="title">Premium Processing</h1>
         <p class="lead">You can start inserting coins now.</p>
         <div class="count"><span id="coins" class="num">0</span></div>
-        <p class="hint" id="status">Waiting for coin pulses… Press Space to simulate (test).</p>
+        <p class="hint" id="status">Waiting for coin pulses�?Press Space to simulate (test).</p>
         <div class="actions">
           <button class="btn" id="confirm">Confirm</button>
         </div>
@@ -63,7 +63,7 @@
         if (typeof s.coin === 'boolean'){
           if (s.coin && !lastCoin) addCoinPulse();
           lastCoin = !!s.coin;
-          elStatus.textContent = s.coin ? 'Coin pulse detected' : 'Waiting for coin pulses…';
+          elStatus.textContent = s.coin ? 'Coin pulse detected' : 'Waiting for coin pulses�?;
         }
       }
 
@@ -101,3 +101,5 @@
     </script>
   </body>
   </html>
+
+
