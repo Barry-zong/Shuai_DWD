@@ -32,7 +32,7 @@
     <div class="wrap">
       <div class="card">
         <h1 class="title">Spin Result</h1>
-        <div id="status" class="result">Loading�?/div>
+        <div id="status" class="result">Loading</div>
         <p class="hint" id="sub">Please wait</p>
         <div class="items" id="items"></div>
         <div class="actions">
@@ -52,7 +52,7 @@
           list.innerHTML = items.map(t => `<div class="pill">${String(t)}</div>`).join('');
           const win = !!data.win;
           document.getElementById('status').textContent = win ? 'Jackpot!' : 'Thanks for playing';
-          document.getElementById('sub').textContent = win ? 'All three matched �?congrats!' : 'Your symbols are shown below.';
+          document.getElementById('sub').textContent = win ? 'All three matched - congrats!' : 'Your symbols are shown below.';
         } catch (e) {
           document.getElementById('status').textContent = 'No result';
           document.getElementById('sub').textContent = 'Spin to see a result.';

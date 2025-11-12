@@ -23,10 +23,10 @@
   <body class="crt crt-bulge crt-effect">
     <div class="wrap">
       <div class="card">
-        <h1 class="title">Premium Processing</h1>
+        <h1 class="title">Premium Processing Payment</h1>
         <p class="lead">You can start inserting coins now.</p>
         <div class="count"><span id="coins" class="num">0</span></div>
-        <p class="hint" id="status">Waiting for coin pulses�?Press Space to simulate (test).</p>
+        <p class="hint" id="status">Waiting for coin pulses?</p>
         <div class="actions">
           <button class="btn" id="confirm">Confirm</button>
         </div>
@@ -57,13 +57,22 @@
         try { localStorage.setItem('premiumCoins', String(coinCount)); } catch(_){ }
         lastCoinTs = now;
       }
+      let hasReceivedCoin = false; // Track if any coin has been received
       function handleState(s){
         if (!s) return;
         sawExternal = true;
         if (typeof s.coin === 'boolean'){
-          if (s.coin && !lastCoin) addCoinPulse();
+          if (s.coin && !lastCoin) {
+            addCoinPulse();
+            hasReceivedCoin = true; // Mark that we've received at least one coin
+          }
           lastCoin = !!s.coin;
-          elStatus.textContent = s.coin ? 'Coin pulse detected' : 'Waiting for coin pulses�?;
+          // Update status text based on whether coins have been received
+          if (hasReceivedCoin) {
+            elStatus.textContent = 'Payment received. Probability upgraded';
+          } else {
+            elStatus.textContent = 'Waiting for coin pulses';
+          }
         }
       }
 

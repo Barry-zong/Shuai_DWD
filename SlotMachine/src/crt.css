@@ -1,4 +1,4 @@
-/* Global CRT-style overlay: scanlines, pixel grid, slight aberration */
+﻿/* Global CRT-style overlay: scanlines, pixel grid, slight aberration */
 :root {
   --crt-scanline-alpha: 0.12;
   --crt-grid-alpha: 0.06;
@@ -59,3 +59,4 @@ html.crt, body.crt {
 
 /* Avoid heavy shadows on interactive 3D elements if needed: override opt-outs */
 .no-crt-aberration { text-shadow: none !important; }
+
