@@ -30,11 +30,11 @@
     <div class="wrap">
       <div class="card">
         <h1 class="title">Spin Result</h1>
-        <p class="eyebrow">Status</p>
+        <!-- <p class="eyebrow">Status</p> -->
         <div id="result-code" class="result-code">---</div>
         <p class="full-term" id="full-term">Awaiting spin</p>
         <p class="message" id="message">Spin to see a result.</p>
-        <p class="countdown" id="countdown">Returning to home in 10s…</p>
+        <p class="countdown" id="countdown">Tap anywhere to return home, or wait 120s…</p>
       </div>
     </div>
     <script>
@@ -58,10 +58,10 @@
           elMessage.textContent = 'Spin to see a result.';
         }
 
-        let seconds = 10;
+        let seconds = 120;
         const updateCountdown = () => {
           if (!elCountdown) return;
-          elCountdown.textContent = `Returning to home in ${seconds}s…`;
+          elCountdown.textContent = `Tap anywhere to return home, or wait ${seconds}s…`;
         };
         updateCountdown();
         const timer = setInterval(() => {
@@ -72,6 +72,18 @@
             window.location.href = './screensaver.html';
           }
         }, 1000);
+
+        function goHome() {
+          window.location.href = './screensaver.html';
+        }
+        document.body.addEventListener('click', goHome);
+        const card = document.querySelector('.card');
+        if (card) {
+          card.addEventListener('click', (e) => {
+            e.stopPropagation();
+            goHome();
+          });
+        }
       })();
     </script>
   </body>
