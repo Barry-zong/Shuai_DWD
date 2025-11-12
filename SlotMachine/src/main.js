@@ -1,133 +1,201 @@
-const SYMBOL_DEFINITIONS = [
-  { emoji: "A", label: "Cherry", background: "#D32F2F" },
-  { emoji: "B", label: "Lemon", background: "#FBC02D", textColor: "#3E2723" },
-  { emoji: "C", label: "Grapes", background: "#673AB7" },
-  { emoji: "D", label: "Watermelon", background: "#00897B" },
-  { emoji: "E", label: "Star", background: "#FFD54F", textColor: "#5D4037" },
-  { emoji: "F", label: "Bell", background: "#FF7043" },
-  { emoji: "G", label: "Gem", background: "#00ACC1" },
-  { emoji: "H", label: "Lucky Seven", background: "#C2185B" },
-  { emoji: "I", label: "Clover", background: "#43A047" },
-  { emoji: "J", label: "Jackpot", background: "#6D4C41" },
+const OUTCOME_DEFINITIONS = [
+  {
+    code: "H1B",
+    full: "H-1B Specialty Occupation Visa",
+    // 恭喜，你被系统认可了。
+    message: "Congratulations. You have been validated.",
+  },
+  {
+    code: "RFE",
+    full: "Request For Evidence",
+    // 请补交你存在的证明。
+    message: "Please provide additional evidence of your existence.",
+  },
+  {
+    code: "PEN",
+    full: "Pending Review Notice",
+    // 你的命运正由未知参数审查。
+    message: "Your fate is currently under review by unseen parameters.",
+  },
+  {
+    code: "QUE",
+    full: "Queue Placement Confirmation",
+    // 你现在排在全国第42,763位。
+    message: "You are now 42,763rd in the national queue.",
+  },
+  {
+    code: "CAP",
+    full: "Annual Cap Reached Notification",
+    // 名额已满，祝你明年好运。
+    message: "Quota reached. Better luck next fiscal year.",
+  },
+  {
+    code: "LOS",
+    full: "Lottery Outcome: System Loss",
+    // 系统运行成功，你没中签。
+    message: "System executed successfully. You didn't.",
+  },
+  {
+    code: "NOT",
+    full: "Not Selected for Further Processing",
+    // 感谢参与你组织的不确定性。
+    message: "Thank you for participating in structured uncertainty.",
+  },
+  {
+    code: "DEN",
+    full: "Denial of Petition",
+    // 很遗憾，运气仍然是稀缺资源。
+    message: "We regret to inform you that luck remains a scarce resource.",
+  },
+  {
+    code: "EXP",
+    full: "Expired Case Status",
+    // 等待期间，你的状态已过期。
+    message: "Your status has expired while you were waiting.",
+  },
+  {
+    code: "REJ",
+    full: "Rejection Due to Formal Error",
+    // 你的梦想不符合规定格式。
+    message: "Your dream did not meet the required format.",
+  },
+  {
+    code: "OUT",
+    full: "Out-of-Cap Notification",
+    // 感谢参与，请退出系统。
+    message: "Thank you for playing. Please exit the system.",
+  },
+  {
+    code: "FAI",
+    full: "Failure of Random Allocation",
+    // 失败已成功处理。
+    message: "Failure successfully processed.",
+  },
+  {
+    code: "RNG",
+    full: "Random Number Generator",
+    // 算法已经发话。
+    message: "The algorithm has spoken.",
+  },
 ];
 
-const SYMBOL_SIZE = 144;
-const SYMBOL_FONT = "72px 'Segoe UI Emoji', 'Apple Color Emoji', sans-serif";
+const AVAILABLE_CHARS = Array.from(
+  new Set(OUTCOME_DEFINITIONS.flatMap((item) => item.code.split("")))
+);
 
-
-function createSymbolImage(definition, index) {
-  const canvas = document.createElement("canvas");
-  canvas.width = SYMBOL_SIZE;
-  canvas.height = SYMBOL_SIZE;
-
-  const ctx = canvas.getContext("2d");
-  ctx.fillStyle = definition.background;
-  ctx.fillRect(0, 0, SYMBOL_SIZE, SYMBOL_SIZE);
-
-  ctx.font = SYMBOL_FONT;
-  ctx.textAlign = "center";
-  ctx.textBaseline = "middle";
-  ctx.fillStyle = definition.textColor || "#FFFFFF";
-  ctx.fillText(definition.emoji, SYMBOL_SIZE / 2, SYMBOL_SIZE / 2 + 4);
-
-  return {
-    src: canvas.toDataURL("image/png"),
-    index,
-    alt: `${definition.label} symbol`,
-  };
-}
-
-const SYMBOL_IMAGES = SYMBOL_DEFINITIONS.map(createSymbolImage);
+const DEFAULT_GLYPH = "$";
 
 const spinButton = document.getElementById("spin-button");
 const statusOutput = document.getElementById("status");
 const coinHint = document.getElementById("coin-hint");
 const reels = [...document.querySelectorAll(".reel")];
+const glyphs = reels.map((reel) => reel.querySelector(".glyph"));
 
-const baseSpinDuration = 2200; // Minimum spin duration in milliseconds
-const reelDelay = 450; // Delay between reels stopping
-const tickInterval = 80; // Interval for symbol updates
+const baseSpinDuration = 2200;
+const reelDelay = 450;
+const tickInterval = 80;
 
-// detect different states
 let canCoin = true;
 let isSpinning = false;
-let canSpin = true; // spin is no longer gated by coin
-let intervalHandles = [];
-let hasSpunOnce = false;
+let spinLocked = false;
+let intervalHandles = new Array(reels.length).fill(null);
+let selectedOutcome = null;
+let finalChars = [];
 
-function chooseRandomImage() {
-  const index = Math.floor(Math.random() * SYMBOL_IMAGES.length);
-  return SYMBOL_IMAGES[index];
+function syncSpinLockState() {
+  try {
+    spinLocked = localStorage.getItem("spinLocked") === "1";
+  } catch (_) {
+    spinLocked = false;
+  }
+  if (spinButton) spinButton.disabled = spinLocked;
+  if (spinLocked && statusOutput) {
+    statusOutput.textContent = "Spin locked";
+  }
 }
 
-function applyImage(reel, image) {
-  const img = reel.querySelector("img");
-  img.src = image.src;
-  img.alt = image.alt;
-  try { img.dataset.index = String(image.index); } catch (_) {}
+function randomChar() {
+  return AVAILABLE_CHARS[Math.floor(Math.random() * AVAILABLE_CHARS.length)];
+}
+
+function setGlyph(reelIndex, char) {
+  const glyph = glyphs[reelIndex];
+  if (!glyph) return;
+  glyph.textContent = char;
+  glyph.dataset.char = char;
+  reels[reelIndex]?.setAttribute("aria-label", char);
+}
+
+function prepareFinalChars(code) {
+  const chars = code.split("");
+  while (chars.length < reels.length) {
+    chars.push(chars[chars.length - 1] || "-");
+  }
+  return chars;
 }
 
 function startSpin() {
-  if (isSpinning || hasSpunOnce) {
-    return;
-  }
+  if (isSpinning || spinLocked) return;
+  selectedOutcome =
+    OUTCOME_DEFINITIONS[
+      Math.floor(Math.random() * OUTCOME_DEFINITIONS.length)
+    ];
+  finalChars = prepareFinalChars(selectedOutcome.code);
   isSpinning = true;
-  hasSpunOnce = true;
-  statusOutput.textContent = "Good luck!";
-  intervalHandles = [];
+  statusOutput.textContent = "Rolling…";
 
-  reels.forEach((reel) => reel.classList.add("is-spinning"));
-
-  reels.forEach((reel, i) => {
-    // Seed with a random symbol immediately
-    applyImage(reel, chooseRandomImage());
-
-    const handle = setInterval(() => {
-      applyImage(reel, chooseRandomImage());
+  reels.forEach((reel, index) => {
+    reel.classList.add("is-spinning");
+    setGlyph(index, randomChar());
+    intervalHandles[index] = setInterval(() => {
+      setGlyph(index, randomChar());
     }, tickInterval);
 
-    intervalHandles.push(handle);
-
     const stopAfter =
-      baseSpinDuration + i * reelDelay + Math.random() * reelDelay;
-
-    setTimeout(() => stopReel(i), stopAfter);
+      baseSpinDuration + index * reelDelay + Math.random() * reelDelay;
+    setTimeout(() => stopReel(index), stopAfter);
   });
 }
 
-function stopReel(reelIndex) {
-  const handle = intervalHandles[reelIndex];
-  clearInterval(handle);
-
-  const reel = reels[reelIndex];
-  reel.classList.remove("is-spinning");
-  applyImage(reel, chooseRandomImage());
-
-  // When the final reel stops, reset the state
-  const allStopped = reels.every((r) => !r.classList.contains("is-spinning"));
-  if (allStopped) {
-    isSpinning = false;
-    // Collect final symbols
-    const finals = reels.map((r) => {
-      const im = r.querySelector('img');
-      return {
-        index: parseInt(im?.dataset?.index || '-1', 10),
-        label: (im?.alt || '').replace(/\s*symbol$/i, '')
-      };
-    });
-    const win = finals.length === 3 && finals[0].index === finals[1].index && finals[1].index === finals[2].index && finals[0].index >= 0;
-    try {
-      localStorage.setItem('lastSpin', JSON.stringify({
-        symbols: finals.map(f => f.index),
-        labels: finals.map(f => f.label),
-        win,
-        ts: Date.now()
-      }));
-    } catch (_) {}
-    statusOutput.textContent = win ? "Jackpot!" : "Done";
-    // Navigate to result page after a short pause
-    setTimeout(() => { try { window.location.href = '/result.html'; } catch(_) { window.location.href = './result.html'; } }, 600);
+function stopReel(index) {
+  if (intervalHandles[index]) {
+    clearInterval(intervalHandles[index]);
+    intervalHandles[index] = null;
   }
+  reels[index].classList.remove("is-spinning");
+  setGlyph(index, finalChars[index] || "-");
+
+  if (intervalHandles.every((handle) => handle === null)) {
+    finalizeSpin();
+  }
+}
+
+function finalizeSpin() {
+  isSpinning = false;
+  if (!selectedOutcome) return;
+  statusOutput.textContent = selectedOutcome.code;
+
+  try {
+    localStorage.setItem("spinLocked", "1");
+    localStorage.setItem(
+      "lastSpin",
+      JSON.stringify({
+        code: selectedOutcome.code,
+        full: selectedOutcome.full,
+        message: selectedOutcome.message,
+        ts: Date.now(),
+      })
+    );
+  } catch (_) {}
+  syncSpinLockState();
+
+  setTimeout(() => {
+    try {
+      window.location.href = "/result.html";
+    } catch (_) {
+      window.location.href = "./result.html";
+    }
+  }, 900);
 }
 
 function handleKeydown(event) {
@@ -140,32 +208,34 @@ function handleKeydown(event) {
 if (spinButton) spinButton.addEventListener("click", startSpin);
 window.addEventListener("keydown", handleKeydown);
 
-// Preload each reel with a symbol so they are never empty
-reels.forEach((reel) => applyImage(reel, chooseRandomImage()));
+reels.forEach((_, index) => setGlyph(index, DEFAULT_GLYPH));
+syncSpinLockState();
 
-// =============================
-// Raspberry Pi button integration
-// =============================
-// Configurable endpoints (default to same host, port 5000)
-const PI_WS_URL = (window.PI_WS_URL || (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PI_WS_URL))
-  || `ws://${location.hostname}:5000/ws`;
-const PI_HTTP_BASE = (window.PI_HTTP_BASE || (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_PI_HTTP_BASE))
-  || `http://${location.hostname}:5000`;
+const PI_WS_URL =
+  window.PI_WS_URL ||
+  (typeof import.meta !== "undefined" &&
+    import.meta.env &&
+    import.meta.env.VITE_PI_WS_URL) ||
+  `ws://${location.hostname}:5000/ws`;
+const PI_HTTP_BASE =
+  window.PI_HTTP_BASE ||
+  (typeof import.meta !== "undefined" &&
+    import.meta.env &&
+    import.meta.env.VITE_PI_HTTP_BASE) ||
+  `http://${location.hostname}:5000`;
 
 let piWS;
-let lastPiPressed = false; // for edge detection
+let lastPiPressed = false;
 
 function handlePiState(state) {
   if (!state) return;
 
-  // Handle coin pulse: keep hint but no longer gate spinning
-  if (typeof state.coin === 'boolean' && state.coin && canCoin) {
+  if (typeof state.coin === "boolean" && state.coin && canCoin) {
     if (coinHint) coinHint.textContent = "Coin detected";
-    canCoin = false; // basic debounce for hint
+    canCoin = false;
   }
 
-  // Handle button press with rising edge: not pressed -> pressed
-  if (typeof state.pressed === 'boolean') {
+  if (typeof state.pressed === "boolean") {
     if (state.pressed && !lastPiPressed) {
       startSpin();
     }
@@ -183,27 +253,23 @@ function connectPiWS() {
       } catch (_) {}
     };
     piWS.onclose = () => {
-      // Reconnect after short delay
       setTimeout(connectPiWS, 1000);
     };
   } catch (_) {
-    // Retry later if constructor throws
     setTimeout(connectPiWS, 2000);
   }
 }
 
 async function pollPi() {
-  // Fallback polling; requires CORS if cross-origin
   try {
-    const resp = await fetch(`${PI_HTTP_BASE}/api/state`, { cache: 'no-cache' });
+    const resp = await fetch(`${PI_HTTP_BASE}/api/state`, {
+      cache: "no-cache",
+    });
     if (!resp.ok) return;
     const data = await resp.json();
     handlePiState(data);
-  } catch (_) {
-    // Ignore errors (e.g., CORS or offline)
-  }
+  } catch (_) {}
 }
 
-// Start WS and a light polling fallback
 connectPiWS();
 setInterval(pollPi, 1000);

@@ -62,12 +62,17 @@ h1 {
   place-items: center;
 }
 
-.reel img {
-  max-width: 70%;
+.reel .glyph {
+  font-size: clamp(2.4rem, 8vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #f5f6fb;
+  text-transform: uppercase;
+  font-family: "JetBrains Mono", "Segoe UI", "PingFang SC", sans-serif;
   transition: transform 0.2s ease;
 }
 
-.reel.is-spinning img {
+.reel.is-spinning .glyph {
   animation: wobble 0.3s linear infinite;
 }
 
