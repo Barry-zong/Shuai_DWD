@@ -87,9 +87,35 @@
         gap: 10px; margin-top: 14px; font-weight: 700; text-align: center;
       }
       .agree input {
-        width: 28px;
-        height: 28px;
+        width: 30px;
+        height: 30px;
         border-radius: 8px;
+        border: 2px solid #8fb9ff;
+        background: rgba(255, 255, 255, 0.6);
+        transition: background 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+      }
+      .agree input:not(:checked) {
+        animation: checkboxPulse 2.6s ease-in-out infinite;
+      }
+      .agree input:checked {
+        animation: none;
+        background: linear-gradient(135deg, #2f00ff, #0206d1);
+        border-color: #2f00ff;
+        box-shadow: 0 6px 18px rgba(47, 0, 255, 0.35);
+      }
+      @keyframes checkboxPulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(122, 179, 255, 0.45);
+          background: rgba(255, 255, 255, 0.75);
+        }
+        50% {
+          box-shadow: 0 0 12px 4px rgba(122, 179, 255, 0.4);
+          background: rgba(155, 198, 255, 0.85);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(122, 179, 255, 0.25);
+          background: rgba(255, 255, 255, 0.75);
+        }
       }
       .helper { color: #5c6a99; font-size: 1rem; margin-top: 4px; }
     </style>

@@ -85,7 +85,19 @@
       }
       .title { margin: 0 0 4px; font-size: clamp(26px, 5.5vw, 36px); font-weight: 800; }
       .eyebrow { margin: 6px 0 4px; text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.85rem; color: #66739e; }
-      .result-code { font-size: clamp(42px, 12vw, 72px); font-weight: 900; letter-spacing: 0.2em; margin: 8px 0 6px; }
+      .result-code {
+        font-size: clamp(42px, 12vw, 72px);
+        font-weight: 900;
+        letter-spacing: 0.2em;
+        margin: 8px 0 6px;
+        background: linear-gradient(120deg, #105d9c, #90c2ff, #0b5ed7);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+        text-shadow:
+          0 2px 8px rgba(11, 94, 215, 0.25),
+          0 0 20px rgba(60, 147, 255, 0.35);
+      }
       .full-term { margin: 0 0 8px; font-size: clamp(18px, 4.2vw, 24px); font-weight: 600; color: #1b2554; }
       .message { margin: 0 0 16px; font-size: 1.05rem; color: #334275; }
       .countdown { margin: 18px 0 0; color: #5a6693; font-size: 0.95rem; letter-spacing: 0.08em; }

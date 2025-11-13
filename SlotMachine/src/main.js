@@ -176,7 +176,11 @@ function stopReel(index) {
     clearInterval(intervalHandles[index]);
     intervalHandles[index] = null;
   }
-  reels[index].classList.remove("is-spinning");
+  const reel = reels[index];
+  if (reel) {
+    reel.classList.add("has-glow");
+    reel.classList.remove("is-spinning");
+  }
   setGlyph(index, finalChars[index] || "-");
 
   if (intervalHandles.every((handle) => handle === null)) {
