@@ -92,12 +92,12 @@
       .edu-bonus-toast {
         position: fixed;
         left: 50%;
-        bottom: clamp(20px, 4vh, 48px);
+        bottom: clamp(80px, 12vh, 120px);
         transform: translate(-50%, 20px);
         background: rgba(32, 84, 255, 0.92);
         color: #fff;
         font-weight: 700;
-        font-size: clamp(0.95rem, 3.2vw, 1.2rem);
+        font-size: clamp(0.95rem, 3.0vw, 1.2rem);
         padding: 0.75rem 1.8rem;
         border-radius: 999px;
         box-shadow: 0 10px 35px rgba(0,0,0,0.25);
@@ -107,6 +107,7 @@
         z-index: 2;
         text-align: center;
         letter-spacing: 0.02em;
+        max-width: 100vw;
       }
       .edu-bonus-toast.is-visible {
         opacity: 1;
