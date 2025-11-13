@@ -12,6 +12,19 @@ html {
   min-height: 100%;
   height: 100%; /* fallback for % heights */
   overflow: hidden; /* remove stray scrollbars */
+  position: relative;
+}
+
+/* Matrix rain canvas background */
+#matrix-rain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .app {
