@@ -9,6 +9,31 @@
       :root { --blue:#0b64d8; --panel:#ffffff; --text:#0f1426; }
       html, body { height: 100%; margin: 0; overflow: hidden; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
       body { background: radial-gradient(circle at 50% -20%, #002fcb 0%, #70b3ff 60%, #004e83 100%); }
+      .win-overlay {
+        position: fixed;
+        inset: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: clamp(8px, 1vw, 16px);
+        align-content: center;
+        justify-items: center;
+        padding: 4vh 4vw;
+        font-size: clamp(18px, 3.8vw, 38px);
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        color: rgba(255,255,255,0.5);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.4s ease;
+        z-index: 0;
+        text-transform: uppercase;
+      }
+      .win-overlay.is-active {
+        opacity: 1;
+      }
+      .win-overlay span {
+        white-space: nowrap;
+      }
       .wrap {
         min-height: 100dvh;
         display: flex;
@@ -16,6 +41,8 @@
         justify-content: center;
         padding: 4vh 2vw;
         box-sizing: border-box;
+        position: relative;
+        z-index: 1;
       }
       .card { width: clamp(0px, 60vw, 720px); max-width: 720px; margin-left: auto; margin-right: auto; background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 32px); text-align: center; }
       .title { margin: 0 0 4px; font-size: clamp(26px, 5.5vw, 36px); font-weight: 800; }
@@ -27,6 +54,7 @@
     </style>
   </head>
   <body class="crt crt-bulge crt-effect">
+    <div class="win-overlay" id="winOverlay" aria-hidden="true"></div>
     <div class="wrap">
       <div class="card">
         <h1 class="title">Spin Result</h1>
@@ -43,6 +71,14 @@
         const elFull = document.getElementById('full-term');
         const elMessage = document.getElementById('message');
         const elCountdown = document.getElementById('countdown');
+        const overlay = document.getElementById('winOverlay');
+
+        function activateOverlay(text){
+          if (!overlay) return;
+          const items = Array.from({ length: 60 }, () => `<span>${text}</span>`);
+          overlay.innerHTML = items.join('');
+          overlay.classList.add('is-active');
+        }
         try { localStorage.removeItem('spinLocked'); } catch (_) {}
 
         try {
@@ -52,10 +88,23 @@
           elCode.textContent = data.code || '---';
           elFull.textContent = data.full || 'Unavailable';
           elMessage.textContent = data.message || 'Please spin again.';
+
+          const rawChance = parseFloat(localStorage.getItem('spinWinChance') || '0');
+          const chanceText = Number.isFinite(rawChance) ? `${(rawChance * 100).toFixed(1)}%` : '0%';
+          if ((data.code || '').toUpperCase() !== 'H1B') {
+            activateOverlay(chanceText);
+          } else if (overlay) {
+            overlay.innerHTML = '';
+            overlay.classList.remove('is-active');
+          }
         } catch (e) {
           elCode.textContent = '---';
           elFull.textContent = 'No result';
           elMessage.textContent = 'Spin to see a result.';
+          if (overlay) {
+            overlay.innerHTML = '';
+            overlay.classList.remove('is-active');
+          }
         }
 
         let seconds = 120;
