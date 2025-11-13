@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="./src/coins.css" />
   </head>
   <body class="crt crt-bulge crt-effect">
+    <div class="money-rain" id="moneyRain" aria-hidden="true"></div>
     <div class="wrap">
       <div class="card">
         <h1 class="title">Premium Processing Payment</h1>
@@ -27,6 +28,8 @@
       const elCoins = document.getElementById('coins');
       const elStatus = document.getElementById('status');
       const btn = document.getElementById('confirm');
+      const moneyRain = document.getElementById('moneyRain');
+      let moneyRainActive = false;
 
       let coinCount = 0;
       try { coinCount = parseInt(localStorage.getItem('premiumCoins') || '0', 10) || 0; } catch (_) {}
@@ -35,8 +38,25 @@
       function updateBackground(){
         const step = Math.max(0, Math.min(5, coinCount));
         document.body.setAttribute('data-coins-step', String(step));
+        if (step >= 5) startMoneyRain();
       }
       updateBackground();
+      function startMoneyRain(){
+        if (moneyRainActive || !moneyRain) return;
+        moneyRainActive = true;
+        moneyRain.classList.add('is-active');
+        const columns = Math.floor(20 + Math.random() * 10); // Dense money rain (20-30 bills)
+        for (let i = 0; i < columns; i++) {
+          const bill = document.createElement('div');
+          bill.className = 'bill';
+          const offset = (i + Math.random() * 0.35) / columns;
+          bill.style.setProperty('--x', `${Math.min(100, offset * 100).toFixed(2)}%`);
+          bill.style.setProperty('--delay', `${(Math.random() * 0.2).toFixed(2)}s`);
+          bill.style.setProperty('--duration', `${(5 + Math.random() * 3.5).toFixed(2)}s`);
+          bill.style.setProperty('--sway', `${(Math.random() * 24 - 12).toFixed(2)}deg`);
+          moneyRain.appendChild(bill);
+        }
+      }
 
       let lastCoin = false;
       let lastCoinTs = 0;

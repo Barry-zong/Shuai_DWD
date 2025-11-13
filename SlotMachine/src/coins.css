@@ -21,6 +21,7 @@ body {
   --bg-step-5: radial-gradient(circle at 50% -20%, #f4a300 0%, #ffe36b 55%, #ffbf2a 100%);
   background: var(--bg-step-0);
   transition: background 0.2s ease;
+  position: relative;
 }
 
 body[data-coins-step="1"] { background: var(--bg-step-1); }
@@ -29,11 +30,60 @@ body[data-coins-step="3"] { background: var(--bg-step-3); }
 body[data-coins-step="4"] { background: var(--bg-step-4); }
 body[data-coins-step="5"] { background: var(--bg-step-5); }
 
+.money-rain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.money-rain.is-active {
+  opacity: 1;
+}
+
+.money-rain .bill {
+  position: absolute;
+  top: -15vh;
+  left: var(--x, 50%);
+  width: clamp(100px, 25vw, 180px);
+  aspect-ratio: 1.62 / 1;
+  background-image: url("/images/moneyIcon.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
+  opacity: 0;
+  animation: billFall var(--duration, 1s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  transform: translateX(-50%);
+}
+
+@keyframes billFall {
+  0% {
+    transform: translate(-50%, -40vh) rotate(calc(var(--sway, 0deg) * -1));
+    opacity: 0;
+  }
+  8% {
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.9;
+  }
+  100% {
+    transform: translate(-50%, 120vh) rotate(var(--sway, 0deg));
+    opacity: 0;
+  }
+}
+
 .wrap {
   min-height: 100dvh;
   display: grid;
   place-items: center;
   padding: 4vh 2vw;
+  position: relative;
+  z-index: 2;
 }
 
 .card {
