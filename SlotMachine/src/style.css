@@ -48,18 +48,18 @@ h1 {
 
 .slot-machine {
   display: grid;
-  grid-template-columns: repeat(3, minmax(120px, 1fr));
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
   justify-items: center;
   align-items: center;
-  gap: 1rem;
-  padding: 1.25rem;
+  gap: 1.5rem;
+  padding: 1.75rem;
   border-radius: 1.5rem;
   background: linear-gradient(145deg, #10132a, #23264d);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
 }
 
 .reel {
-  width: clamp(120px, 15vw, 160px);
+  width: clamp(160px, 20vw, 220px);
   aspect-ratio: 1 / 1;
   border-radius: 1rem;
   overflow: hidden;
@@ -70,7 +70,7 @@ h1 {
 }
 
 .reel .glyph {
-  font-size: clamp(2.4rem, 8vw, 3.2rem);
+  font-size: clamp(3.2rem, 10vw, 4.4rem);
   font-weight: 800;
   letter-spacing: 0.18em;
   color: #f5f6fb;
