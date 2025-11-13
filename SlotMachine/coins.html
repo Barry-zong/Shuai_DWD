@@ -5,20 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Premium Coins - Lucky Slot</title>
     <link rel="stylesheet" href="./src/crt.css" />
-    <style>
-      :root { --blue:#0b64d8; --panel:#ffffff; --text:#0f1426; }
-      html, body { height: 100%; margin: 0; overflow: hidden; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
-      body { background: radial-gradient(circle at 50% -20%, #3e86ee 0%, var(--blue) 60%, #053a91 100%); }
-      .wrap { min-height: 100dvh; display: grid; place-items: center; padding: 4vh 2vw; }
-      .card { width: clamp(320px, 60vw, 720px); max-width: 720px; margin-left: auto; margin-right: auto;; background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 28px); text-align: center; }
-      .title { margin: 0 0 6px; font-size: clamp(24px, 5.2vw, 32px); font-weight: 800; }
-      .lead { margin: 0 0 16px; color: #334275; }
-      .count { font-size: clamp(40px, 10vmin, 72px); font-weight: 900; letter-spacing: 2px; margin: 6px 0 2px; }
-      .hint { color:#5c6a99; margin: 0 0 10px; }
-      .actions { display:flex; gap:12px; justify-content:center; margin-top: 10px; }
-      .btn { appearance:none; border:none; border-radius: 999px; padding: 10px 18px; font-weight:800; cursor:pointer; color:#fff; background: linear-gradient(160deg, #2f00ff, #0206d1); box-shadow: 0 12px 30px rgba(47,0,255,.35); }
-      .num { display:inline-block; min-width: 2ch; text-align: center; }
-    </style>
+    <link rel="stylesheet" href="./src/coins.css" />
   </head>
   <body class="crt crt-bulge crt-effect">
     <div class="wrap">
@@ -45,6 +32,12 @@
       try { coinCount = parseInt(localStorage.getItem('premiumCoins') || '0', 10) || 0; } catch (_) {}
       elCoins.textContent = String(coinCount);
 
+      function updateBackground(){
+        const step = Math.max(0, Math.min(5, coinCount));
+        document.body.setAttribute('data-coins-step', String(step));
+      }
+      updateBackground();
+
       let lastCoin = false;
       let lastCoinTs = 0;
       let sawExternal = false; // becomes true once any WS/HTTP state received
@@ -56,6 +49,7 @@
         elCoins.textContent = String(coinCount);
         try { localStorage.setItem('premiumCoins', String(coinCount)); } catch(_){ }
         lastCoinTs = now;
+        updateBackground();
       }
       let hasReceivedCoin = false; // Track if any coin has been received
       function handleState(s){
@@ -110,5 +104,3 @@
     </script>
   </body>
   </html>
-
-

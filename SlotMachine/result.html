@@ -8,7 +8,7 @@
     <style>
       :root { --blue:#0b64d8; --panel:#ffffff; --text:#0f1426; }
       html, body { height: 100%; margin: 0; overflow: hidden; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
-      body { background: radial-gradient(circle at 50% -20%, #3e86ee 0%, var(--blue) 60%, #053a91 100%); }
+      body { background: radial-gradient(circle at 50% -20%, #002fcb 0%, #70b3ff 60%, #004e83 100%); }
       .wrap {
         min-height: 100dvh;
         display: flex;
@@ -23,7 +23,7 @@
       .result-code { font-size: clamp(42px, 12vw, 72px); font-weight: 900; letter-spacing: 0.2em; margin: 8px 0 6px; }
       .full-term { margin: 0 0 8px; font-size: clamp(18px, 4.2vw, 24px); font-weight: 600; color: #1b2554; }
       .message { margin: 0 0 16px; font-size: 1.05rem; color: #334275; }
-      .countdown { margin: 18px 0 0; color: #5a6693; font-size: 0.95rem; letter-spacing: 0.08em; text-transform: uppercase; }
+      .countdown { margin: 18px 0 0; color: #5a6693; font-size: 0.95rem; letter-spacing: 0.08em; }
     </style>
   </head>
   <body class="crt crt-bulge crt-effect">
@@ -34,7 +34,7 @@
         <div id="result-code" class="result-code">---</div>
         <p class="full-term" id="full-term">Awaiting spin</p>
         <p class="message" id="message">Spin to see a result.</p>
-        <p class="countdown" id="countdown">Tap anywhere to return home, or wait 120s…</p>
+        <p class="countdown" id="countdown">Tap anywhere to return home. 120s…</p>
       </div>
     </div>
     <script>
@@ -61,7 +61,7 @@
         let seconds = 120;
         const updateCountdown = () => {
           if (!elCountdown) return;
-          elCountdown.textContent = `Tap anywhere to return home, or wait ${seconds}s…`;
+          elCountdown.textContent = `Tap anywhere to return home, ${seconds}s…`;
         };
         updateCountdown();
         const timer = setInterval(() => {

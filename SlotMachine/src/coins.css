@@ -13,8 +13,21 @@ body {
 }
 
 body {
-  background: radial-gradient(circle at 50% -20%, #3e86ee 0%, var(--blue) 60%, #053a91 100%);
+  --bg-step-0: radial-gradient(circle at 50% -20%, #002fcb 0%, #70b3ff 60%, #004e83 100%);
+  --bg-step-1: radial-gradient(circle at 50% -20%, #153dcf 0%, #6da6ff 55%, #0a4fa2 100%);
+  --bg-step-2: radial-gradient(circle at 50% -20%, #2a4ae0 0%, #7bb3ff 55%, #0f5c9f 100%);
+  --bg-step-3: radial-gradient(circle at 50% -20%, #3f55f0 0%, #89bfff 55%, #0e6a8f 100%);
+  --bg-step-4: radial-gradient(circle at 50% -20%, #715de5 0%, #bcd6ff 60%, #1f7f86 100%);
+  --bg-step-5: radial-gradient(circle at 50% -20%, #f4a300 0%, #ffe36b 55%, #ffbf2a 100%);
+  background: var(--bg-step-0);
+  transition: background 0.2s ease;
 }
+
+body[data-coins-step="1"] { background: var(--bg-step-1); }
+body[data-coins-step="2"] { background: var(--bg-step-2); }
+body[data-coins-step="3"] { background: var(--bg-step-3); }
+body[data-coins-step="4"] { background: var(--bg-step-4); }
+body[data-coins-step="5"] { background: var(--bg-step-5); }
 
 .wrap {
   min-height: 100dvh;

@@ -15,7 +15,10 @@
   <body class="crt">
     <p>Redirecting to <a href="/screensaver.html">screensaver</a>…</p>
     <script>
-      try { localStorage.removeItem('spinLocked'); } catch (_) {}
+      try {
+        localStorage.removeItem('spinLocked');
+        localStorage.removeItem('spinWinChance');
+      } catch (_) {}
     </script>
   </body>
 </html>

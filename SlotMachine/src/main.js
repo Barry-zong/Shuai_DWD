@@ -79,6 +79,13 @@ const OUTCOME_DEFINITIONS = [
   },
 ];
 
+const H1B_CODE = "H1B";
+const H1B_OUTCOME =
+  OUTCOME_DEFINITIONS.find((entry) => entry.code === H1B_CODE) ||
+  OUTCOME_DEFINITIONS[0];
+const OTHER_OUTCOMES = OUTCOME_DEFINITIONS.filter(
+  (entry) => entry.code !== H1B_CODE
+);
 const AVAILABLE_CHARS = Array.from(
   new Set(OUTCOME_DEFINITIONS.flatMap((item) => item.code.split("")))
 );
@@ -136,10 +143,22 @@ function prepareFinalChars(code) {
 
 function startSpin() {
   if (isSpinning || spinLocked) return;
-  selectedOutcome =
-    OUTCOME_DEFINITIONS[
-      Math.floor(Math.random() * OUTCOME_DEFINITIONS.length)
-    ];
+  const chance = calculateWinningChance();
+  try {
+    localStorage.setItem("spinWinChance", String(chance));
+  } catch (_) {}
+  console.log(
+    `[LuckySlot] spin chance => ${(chance * 100).toFixed(1)}% (coins: ${getCoinCount()})`
+  );
+  const shouldWin = Math.random() < chance;
+  if (shouldWin) {
+    selectedOutcome = H1B_OUTCOME;
+  } else {
+    selectedOutcome = chooseRandomOutcome(OTHER_OUTCOMES);
+  }
+  if (!selectedOutcome) {
+    selectedOutcome = H1B_OUTCOME;
+  }
   finalChars = prepareFinalChars(selectedOutcome.code);
   isSpinning = true;
   statusOutput.textContent = "Rolling…";
@@ -273,3 +292,70 @@ async function pollPi() {
 
 connectPiWS();
 setInterval(pollPi, 1000);
+
+function getPlayerInfo() {
+  try {
+    return JSON.parse(localStorage.getItem("playerInfo") || "{}") || {};
+  } catch (_) {
+    return {};
+  }
+}
+
+function getCoinCount() {
+  try {
+    const raw = parseInt(localStorage.getItem("premiumCoins") || "0", 10);
+    return Number.isFinite(raw) ? Math.max(0, raw) : 0;
+  } catch (_) {
+    return 0;
+  }
+}
+
+function chooseRandomOutcome(pool = OUTCOME_DEFINITIONS) {
+  const source = pool.length > 0 ? pool : OUTCOME_DEFINITIONS;
+  return source[Math.floor(Math.random() * source.length)] || H1B_OUTCOME;
+}
+
+function calculateWinningChance() {
+  const baseProbability = 15;
+  const educationBonusMap = {
+    "Below Kindergarten": -40,
+    "Elementary School": -20,
+    "Middle School": -15,
+    "High School": -10,
+    "Bachelor's": 0,
+    "Master's": 3,
+    "PhD": 5,
+    "Above PhD": 6,
+  };
+  const salaryBonusMap = {
+    L1: -2,
+    L2: 1,
+    L3: 3,
+    L4: 7,
+    L5: 10,
+  };
+  const fieldBonusMap = {
+    STEM: 5,
+    Finance: 4,
+    Design: 2,
+    Research: 2,
+    Other: 0,
+  };
+
+  const info = getPlayerInfo();
+  const coins = getCoinCount();
+
+  if (coins >= 5) {
+    return 0.99;
+  }
+
+  const eduBonus = educationBonusMap[info.educationLevel] || 0;
+  const salBonus = salaryBonusMap[info.wageLevel] || 0;
+  const fieldBonus = fieldBonusMap[info.occupationCategory] || 0;
+  const coinBonus = Math.max(0, coins) * 1.5;
+
+  let total = baseProbability + eduBonus + salBonus + fieldBonus + coinBonus;
+  total = Math.min(90, Math.max(0, total));
+
+  return total / 100;
+}

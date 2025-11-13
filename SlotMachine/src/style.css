@@ -1,7 +1,7 @@
 :root {
   color-scheme: light dark;
   font-family: "Segoe UI", "PingFang SC", "Hiragino Sans GB", sans-serif;
-  background: radial-gradient(circle at top, #1d1f33 0%, #0b0d1b 60%, #000 100%);
+  background: radial-gradient(circle at top, #253c61 0%, #253c61 60%, #253c61 100%);
   color: #f5f6fb;
   font-size: 18px; /* Slightly larger base for small screens */
 }
