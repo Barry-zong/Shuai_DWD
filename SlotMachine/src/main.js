@@ -156,6 +156,7 @@ function startSpin() {
     spinHint.classList.add("hidden");
   }
 
+  const reelOffsets = [0, 800, 1800];
   reels.forEach((reel, index) => {
     reel.classList.add("is-spinning");
     setGlyph(index, randomChar());
@@ -163,8 +164,9 @@ function startSpin() {
       setGlyph(index, randomChar());
     }, tickInterval);
 
+    const offset = reelOffsets[index] ?? reelOffsets[reelOffsets.length - 1];
     const stopAfter =
-      baseSpinDuration + index * reelDelay + Math.random() * reelDelay;
+      baseSpinDuration + offset + Math.random() * reelDelay;
     setTimeout(() => stopReel(index), stopAfter);
   });
 }
@@ -352,4 +354,3 @@ function calculateWinningChance() {
 
   return total / 100;
 }
-
