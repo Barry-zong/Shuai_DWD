@@ -1,0 +1,20 @@
+/* Safe area margins for all pages - increases top and bottom spacing */
+/* Backgrounds remain full-screen, only content gets additional padding */
+
+/* For register.html, coins.html, result.html */
+.wrap {
+  padding-top: 12vh !important;
+  padding-bottom: 10vh !important;
+}
+
+/* For confirm.html */
+.page {
+  padding-top: 0vh !important;
+  padding-bottom: 6vh !important;
+}
+
+/* For spin.html */
+.app {
+  padding-top: 8.3rem !important;
+  padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)) !important;
+}

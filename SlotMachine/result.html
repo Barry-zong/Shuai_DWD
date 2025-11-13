@@ -3,8 +3,9 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Spin Result - Lucky Slot</title>
+    <title>Lottery Result - Lucky Slot</title>
     <link rel="stylesheet" href="./src/crt.css" />
+    <link rel="stylesheet" href="./src/safe-area.css" />
     <style>
       :root { --blue:#0b64d8; --panel:#ffffff; --text:#0f1426; }
       html, body { height: 100%; margin: 0; overflow: hidden; font-family: Segoe UI, system-ui, -apple-system, Roboto, sans-serif; }
@@ -88,6 +89,29 @@
       .full-term { margin: 0 0 8px; font-size: clamp(18px, 4.2vw, 24px); font-weight: 600; color: #1b2554; }
       .message { margin: 0 0 16px; font-size: 1.05rem; color: #334275; }
       .countdown { margin: 18px 0 0; color: #5a6693; font-size: 0.95rem; letter-spacing: 0.08em; }
+      .edu-bonus-toast {
+        position: fixed;
+        left: 50%;
+        bottom: clamp(20px, 4vh, 48px);
+        transform: translate(-50%, 20px);
+        background: rgba(32, 84, 255, 0.92);
+        color: #fff;
+        font-weight: 700;
+        font-size: clamp(0.95rem, 3.2vw, 1.2rem);
+        padding: 0.75rem 1.8rem;
+        border-radius: 999px;
+        box-shadow: 0 10px 35px rgba(0,0,0,0.25);
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.35s ease, transform 0.35s ease;
+        z-index: 2;
+        text-align: center;
+        letter-spacing: 0.02em;
+      }
+      .edu-bonus-toast.is-visible {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
     </style>
   </head>
   <body class="crt crt-bulge crt-effect">
@@ -95,7 +119,7 @@
     <div class="wrap">
       <div class="card">
         <div class="approved-stamp" id="approvedStamp" aria-hidden="true"></div>
-        <h1 class="title">Spin Result</h1>
+        <h1 class="title">Lottery Result</h1>
         <!-- <p class="eyebrow">Status</p> -->
         <div id="result-code" class="result-code">---</div>
         <p class="full-term" id="full-term">Awaiting spin</p>
@@ -111,6 +135,26 @@
         const elCountdown = document.getElementById('countdown');
         const overlay = document.getElementById('winOverlay');
         const approvedStamp = document.getElementById('approvedStamp');
+        let eduToast;
+
+        function ensureEduToast() {
+          if (eduToast) return eduToast;
+          eduToast = document.createElement('div');
+          eduToast.className = 'edu-bonus-toast';
+          eduToast.textContent = 'Because of your advanced degree, you may try again in six months. Good luck!';
+          document.body.appendChild(eduToast);
+          return eduToast;
+        }
+
+        function showEduToast() {
+          const toast = ensureEduToast();
+          toast.classList.add('is-visible');
+          setTimeout(() => toast.classList.remove('is-visible'), 4000);
+        }
+
+        function hideEduToast() {
+          if (eduToast) eduToast.classList.remove('is-visible');
+        }
 
         function activateOverlay({ text = '', mode = 'lose' } = {}){
           if (!overlay) return;
@@ -133,12 +177,24 @@
 
           const rawChance = parseFloat(localStorage.getItem('spinWinChance') || '0');
           const chanceText = Number.isFinite(rawChance) ? `${(rawChance * 100).toFixed(1)}%` : '0%';
+          const playerInfo = (() => {
+            try {
+              return JSON.parse(localStorage.getItem('playerInfo') || '{}') || {};
+            } catch (_) {
+              return {};
+            }
+          })();
+          const highEdu = ["Master's", "PhD", "Above PhD"];
+          const hasHighEdu = highEdu.includes((playerInfo.educationLevel || '').trim());
+
           if ((data.code || '').toUpperCase() !== 'H1B') {
             activateOverlay({ text: chanceText, mode: 'lose' });
             if (approvedStamp) approvedStamp.classList.remove('is-active');
+            if (hasHighEdu) showEduToast();
           } else {
             activateOverlay({ mode: 'win' });
             if (approvedStamp) approvedStamp.classList.add('is-active');
+            hideEduToast();
           }
         } catch (e) {
           elCode.textContent = '---';
@@ -150,6 +206,7 @@
             delete overlay.dataset.mode;
           }
           if (approvedStamp) approvedStamp.classList.remove('is-active');
+          hideEduToast();
         }
 
         let seconds = 120;
@@ -180,5 +237,6 @@
         }
       })();
     </script>
+    <script src="./src/spin-guard.js"></script>
   </body>
   </html>

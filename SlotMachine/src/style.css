@@ -21,8 +21,10 @@ html {
   min-height: 100dvh;  /* dynamic viewport unit (preferred) */
   box-sizing: border-box; /* include padding within viewport height */
   padding: 3rem 1.5rem calc(4rem + env(safe-area-inset-bottom, 0px));
-  display: grid;
-  place-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 1rem;
   text-align: center;
 }
@@ -37,6 +39,11 @@ h1 {
   margin: 0;
   color: #b5b9de;
   font-size: clamp(1.1rem, 3.6vw, 1.6rem);
+}
+.hintS {
+  margin: 0;
+  color: #b5b9de;
+ font-size: clamp(0.9rem, 2.8vw, 1.2rem);
 }
 
 .slot-machine {
@@ -108,6 +115,6 @@ html, body { cursor: none; }
 #status {
   min-height: 1.2em;
   font-weight: 500;
-  color: #ffd86f;
+  color: #888888;
   font-size: 1.1rem;
 }

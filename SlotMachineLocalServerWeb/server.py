@@ -110,7 +110,7 @@ def vl53_worker():
     vl53.measurement_timing_budget = 20000  # ~50 Hz
 
     COOLDOWN = 0.5   # s
-    THRESH   = 5    # mm
+    THRESH   = 15    # mm
     SLEEP    = 0.005 # s
     COIN_PULSE = 0.2 # s, coin:true 的脉冲时长
 
