@@ -82,6 +82,7 @@ const DEFAULT_GLYPH = "$";
 const spinButton = document.getElementById("spin-button");
 const statusOutput = document.getElementById("status");
 const coinHint = document.getElementById("coin-hint");
+const spinHint = document.getElementById("spin-hint");
 const reels = [...document.querySelectorAll(".reel")];
 const glyphs = reels.map((reel) => reel.querySelector(".glyph"));
 
@@ -149,6 +150,11 @@ function startSpin() {
   finalChars = prepareFinalChars(selectedOutcome.code);
   isSpinning = true;
   statusOutput.textContent = "Rolling...";
+
+  // Hide the spin hint when spinning starts
+  if (spinHint) {
+    spinHint.classList.add("hidden");
+  }
 
   reels.forEach((reel, index) => {
     reel.classList.add("is-spinning");
