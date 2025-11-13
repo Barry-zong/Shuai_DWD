@@ -56,7 +56,13 @@ h1 {
 .hintS {
   margin: 0;
   color: #b5b9de;
- font-size: clamp(0.9rem, 2.8vw, 1.2rem);
+  font-size: clamp(0.9rem, 2.8vw, 1.2rem);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.hintS.hidden {
+  opacity: 0;
 }
 
 .slot-machine {

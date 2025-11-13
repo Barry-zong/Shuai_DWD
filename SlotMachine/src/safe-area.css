@@ -3,8 +3,16 @@
 
 /* For register.html, coins.html, result.html */
 .wrap {
-  padding-top: 12vh !important;
-  padding-bottom: 10vh !important;
+  padding-top: clamp(1vh, 18vh, 20vh) !important;
+  padding-bottom: clamp(1vh, 10vh, 15vh) !important;
+}
+
+/* Smaller screens need less padding for register.html to fit content */
+@media (max-height: 700px) {
+  .wrap {
+    padding-top: 2vh !important;
+    padding-bottom: 2vh !important;
+  }
 }
 
 /* For confirm.html */

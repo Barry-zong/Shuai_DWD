@@ -22,15 +22,17 @@
   const drops = [];
   const columnCodes = [];
   const columnCharIndex = [];
+  const columnSpeeds = [];
   for (let i = 0; i < columns; i++) {
     drops[i] = Math.random() * -100; // Start at random heights
     columnCodes[i] = codes[Math.floor(Math.random() * codes.length)];
     columnCharIndex[i] = 0;
+    columnSpeeds[i] = 0.55 + Math.random() * 0.35; // Slight variation per column
   }
 
   function draw() {
     // Semi-transparent black to create fade effect
-    ctx.fillStyle = 'rgba(37, 60, 97, 0.05)'; // Match the background color
+    ctx.fillStyle = 'rgba(37, 60, 97, 0.16)'; // Slightly stronger fade to prevent heavy overlap
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Matrix rain color - light blue/cyan to match theme
@@ -48,10 +50,11 @@
         drops[i] = 0;
         columnCodes[i] = codes[Math.floor(Math.random() * codes.length)];
         columnCharIndex[i] = 0;
+        columnSpeeds[i] = 0.55 + Math.random() * 0.35;
       }
 
-      drops[i]++;
-      columnCharIndex[i]++;
+      drops[i] += columnSpeeds[i];
+      columnCharIndex[i] += columnSpeeds[i];
     }
   }
 
