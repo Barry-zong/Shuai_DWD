@@ -24,7 +24,28 @@
       /* 去掉右侧垂直滚动�?*/
       background: radial-gradient(circle at 50% -20%, #002fcb 0%, #70b3ff 60%, #004e83 100%);
       font-family: "Segoe UI", "PingFang SC", "Hiragino San GB", sans-serif;
+      position: relative;
     }
+
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url("./images/starsBackground.png") left center/ clamp(280px, 120vmin, 1520px) no-repeat;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: url("./images/starsBackground.png") left up/ clamp(280px, 120vmin, 1520px) no-repeat;
+      opacity: 0.5;
+      pointer-events: none;
+      z-index: 0;
+    }
+    
 
     .wrap {
       min-height: 100vh;
@@ -37,6 +58,8 @@
       place-items: center;
       padding: 4vh 2vw;
       box-sizing: border-box;
+      position: relative;
+      z-index: 1;
     }
 
     .card {
@@ -150,15 +173,25 @@
       }
     }
 
-    .option .top {
-      font-weight: 800;
-      font-size: 1.1rem;
+.option {
+      position: relative;
+      padding-top: 12px;
+      padding-bottom: 12px;
     }
 
-    .option .bottom {
+.option .top {
+      font-weight: 800;
+      font-size: 1.1rem;
+      line-height: 1.2;
+      margin-bottom: 4px;
+    }
+
+.option .bottom {
       font-size: 1rem;
-      opacity: .7;
-      filter: blur(2.0px);
+      opacity: .75;
+      filter: blur(2px);
+      line-height: 1.1;
+      margin-top: 0;
     }
 
     /* (reserved) spin keyframes for future use */
