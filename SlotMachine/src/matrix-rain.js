@@ -16,15 +16,16 @@
   // H1B outcome codes from the slot machine
   const codes = ['H1B', 'RFE', 'PEN', 'QUE', 'CAP', 'LOS', 'NOT', 'DEN', 'EXP', 'REJ', 'OUT', 'FAI', 'RNG'];
 
-  // Break codes into individual characters
-  const letters = Array.from(new Set(codes.join(''))).join('');
-
   const fontSize = 16;
   const columns = Math.floor(canvas.width / fontSize);
 
   const drops = [];
+  const columnCodes = [];
+  const columnCharIndex = [];
   for (let i = 0; i < columns; i++) {
     drops[i] = Math.random() * -100; // Start at random heights
+    columnCodes[i] = codes[Math.floor(Math.random() * codes.length)];
+    columnCharIndex[i] = 0;
   }
 
   function draw() {
@@ -37,17 +38,20 @@
     ctx.font = fontSize + 'px "JetBrains Mono", monospace';
 
     for (let i = 0; i < drops.length; i++) {
-      // Randomly pick a character from the H1B codes
-      const text = letters[Math.floor(Math.random() * letters.length)];
+      const code = columnCodes[i];
+      const text = code.charAt(columnCharIndex[i] % code.length);
 
       ctx.fillText(text, i * fontSize, drops[i] * fontSize);
 
       // Reset drop to top when it reaches bottom
       if (drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
         drops[i] = 0;
+        columnCodes[i] = codes[Math.floor(Math.random() * codes.length)];
+        columnCharIndex[i] = 0;
       }
 
       drops[i]++;
+      columnCharIndex[i]++;
     }
   }
 
