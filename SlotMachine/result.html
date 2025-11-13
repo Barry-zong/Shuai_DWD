@@ -12,26 +12,47 @@
       .win-overlay {
         position: fixed;
         inset: 0;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-        gap: clamp(8px, 1vw, 16px);
-        align-content: center;
-        justify-items: center;
-        padding: 4vh 4vw;
-        font-size: clamp(18px, 3.8vw, 38px);
-        font-weight: 800;
-        letter-spacing: 0.06em;
-        color: rgba(255,255,255,0.5);
         opacity: 0;
         pointer-events: none;
         transition: opacity 0.4s ease;
         z-index: 0;
-        text-transform: uppercase;
       }
       .win-overlay.is-active {
         opacity: 1;
       }
-      .win-overlay span {
+      .win-overlay .overlay-bg {
+        position: absolute;
+        inset: 0;
+        background: none;
+        opacity: 0.8;
+      }
+      .win-overlay .overlay-text {
+        position: absolute;
+        inset: 0;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+        grid-auto-rows: minmax(32px, 5vh);
+        gap: clamp(4px, 0.6vw, 10px);
+        align-content: stretch;
+        justify-items: center;
+        padding: 4vh 4vw;
+        font-size: clamp(12px, 3vw, 26px);
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: rgba(255,255,255,0.05);
+        text-transform: uppercase;
+      }
+      .win-overlay[data-mode="lose"] .overlay-bg {
+        background: url("/images/failBackground.png") center/cover no-repeat;
+      }
+      .win-overlay[data-mode="win"] .overlay-bg {
+        background: url("/images/winBackground.png") center/cover no-repeat;
+        opacity: 0.9；
+      }
+      .win-overlay[data-mode="win"] .overlay-text {
+        display: none;
+      }
+      .win-overlay .overlay-text span {
         white-space: nowrap;
       }
       .wrap {
@@ -44,7 +65,23 @@
         position: relative;
         z-index: 1;
       }
-      .card { width: clamp(0px, 60vw, 720px); max-width: 720px; margin-left: auto; margin-right: auto; background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 32px); text-align: center; }
+      .card { width: clamp(0px, 60vw, 720px); max-width: 720px; margin-left: auto; margin-right: auto; background: var(--panel); color: var(--text); border-radius: 16px; box-shadow: 0 24px 60px rgba(0,0,0,.25); padding: clamp(18px, 4vw, 32px); text-align: center; position: relative; }
+      .approved-stamp {
+        position: absolute;
+        left: clamp(-120px, -20vw, -60px);
+        top: clamp(-80px, -10vw, -30px);
+        width: clamp(160px, 45vw, 520px);
+        height: clamp(90px, 28vw, 260px);
+        background: url("/images/approved.png") center/contain no-repeat;
+        opacity: 0;
+        transform: rotate(-0deg);
+        transition: opacity 0.3s ease;
+        z-index: 5;
+        pointer-events: none;
+      }
+      .approved-stamp.is-active {
+        opacity: 1;
+      }
       .title { margin: 0 0 4px; font-size: clamp(26px, 5.5vw, 36px); font-weight: 800; }
       .eyebrow { margin: 6px 0 4px; text-transform: uppercase; letter-spacing: 0.24em; font-size: 0.85rem; color: #66739e; }
       .result-code { font-size: clamp(42px, 12vw, 72px); font-weight: 900; letter-spacing: 0.2em; margin: 8px 0 6px; }
@@ -57,6 +94,7 @@
     <div class="win-overlay" id="winOverlay" aria-hidden="true"></div>
     <div class="wrap">
       <div class="card">
+        <div class="approved-stamp" id="approvedStamp" aria-hidden="true"></div>
         <h1 class="title">Spin Result</h1>
         <!-- <p class="eyebrow">Status</p> -->
         <div id="result-code" class="result-code">---</div>
@@ -72,11 +110,15 @@
         const elMessage = document.getElementById('message');
         const elCountdown = document.getElementById('countdown');
         const overlay = document.getElementById('winOverlay');
+        const approvedStamp = document.getElementById('approvedStamp');
 
-        function activateOverlay(text){
+        function activateOverlay({ text = '', mode = 'lose' } = {}){
           if (!overlay) return;
-          const items = Array.from({ length: 60 }, () => `<span>${text}</span>`);
-          overlay.innerHTML = items.join('');
+          overlay.dataset.mode = mode;
+          const count = Math.ceil(window.innerHeight / 20) * 40;
+          const spans = Array.from({ length: count }, () => `<span>${text}</span>`).join('');
+          const textBlock = mode === 'lose' ? `<div class="overlay-text">${spans}</div>` : '<div class="overlay-text"></div>';
+          overlay.innerHTML = `<div class="overlay-bg"></div>${textBlock}`;
           overlay.classList.add('is-active');
         }
         try { localStorage.removeItem('spinLocked'); } catch (_) {}
@@ -92,10 +134,11 @@
           const rawChance = parseFloat(localStorage.getItem('spinWinChance') || '0');
           const chanceText = Number.isFinite(rawChance) ? `${(rawChance * 100).toFixed(1)}%` : '0%';
           if ((data.code || '').toUpperCase() !== 'H1B') {
-            activateOverlay(chanceText);
-          } else if (overlay) {
-            overlay.innerHTML = '';
-            overlay.classList.remove('is-active');
+            activateOverlay({ text: chanceText, mode: 'lose' });
+            if (approvedStamp) approvedStamp.classList.remove('is-active');
+          } else {
+            activateOverlay({ mode: 'win' });
+            if (approvedStamp) approvedStamp.classList.add('is-active');
           }
         } catch (e) {
           elCode.textContent = '---';
@@ -104,7 +147,9 @@
           if (overlay) {
             overlay.innerHTML = '';
             overlay.classList.remove('is-active');
+            delete overlay.dataset.mode;
           }
+          if (approvedStamp) approvedStamp.classList.remove('is-active');
         }
 
         let seconds = 120;
