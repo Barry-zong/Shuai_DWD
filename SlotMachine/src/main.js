@@ -1,81 +1,68 @@
-const OUTCOME_DEFINITIONS = [
+﻿const OUTCOME_DEFINITIONS = [
   {
     code: "H1B",
     full: "H-1B Specialty Occupation Visa",
-    // 恭喜，你被系统认可了。
-    message: "Congratulations. You have been validated.",
+    message: "Congratulations on being selected.",
   },
   {
     code: "RFE",
     full: "Request For Evidence",
-    // 请补交你存在的证明。
-    message: "Please provide additional evidence of your existence.",
+    message: "Additional evidence needed.",
   },
   {
     code: "PEN",
     full: "Pending Review Notice",
-    // 你的命运正由未知参数审查。
-    message: "Your fate is currently under review by unseen parameters.",
+    message: "Your case is currently under review.",
   },
   {
     code: "QUE",
     full: "Queue Placement Confirmation",
-    // 你现在排在全国第42,763位。
     message: "You are now 42,763rd in the national queue.",
   },
   {
     code: "CAP",
     full: "Annual Cap Reached Notification",
-    // 名额已满，祝你明年好运。
-    message: "Quota reached. Better luck next fiscal year.",
+    message: "Quota reached. Try again next fiscal year.",
   },
   {
     code: "LOS",
     full: "Lottery Outcome: System Loss",
-    // 系统运行成功，你没中签。
-    message: "System executed successfully. You didn't.",
+    message: "A system error occurred.",
   },
   {
     code: "NOT",
     full: "Not Selected for Further Processing",
-    // 感谢参与你组织的不确定性。
-    message: "Thank you for participating in structured uncertainty.",
+    message: "Your H-1B registration was not chosen for this fiscal year.",
   },
   {
     code: "DEN",
     full: "Denial of Petition",
-    // 很遗憾，运气仍然是稀缺资源。
-    message: "We regret to inform you that luck remains a scarce resource.",
+    message: "USCIS reviewed the case and did not approve the H-1B petition.",
   },
   {
     code: "EXP",
     full: "Expired Case Status",
-    // 等待期间，你的状态已过期。
-    message: "Your status has expired while you were waiting.",
+    message: "The petition is no longer active.",
   },
   {
     code: "REJ",
     full: "Rejection Due to Formal Error",
-    // 你的梦想不符合规定格式。
-    message: "Your dream did not meet the required format.",
+    message: "The petition was rejected because of a mistake or missing information.",
   },
   {
     code: "OUT",
     full: "Out-of-Cap Notification",
-    // 感谢参与，请退出系统。
-    message: "Thank you for playing. Please exit the system.",
+    message: "The petition is not subject to the H-1B cap.",
   },
   {
     code: "FAI",
     full: "Failure of Random Allocation",
-    // 失败已成功处理。
-    message: "Failure successfully processed.",
+    message: "The petition was not selected in the H-1B lottery.",
   },
   {
     code: "RNG",
     full: "Random Number Generator",
-    // 算法已经发话。
-    message: "The algorithm has spoken.",
+    message: "USCIS assigned a random number for processing.",
   },
 ];
 
@@ -161,7 +148,7 @@ function startSpin() {
   }
   finalChars = prepareFinalChars(selectedOutcome.code);
   isSpinning = true;
-  statusOutput.textContent = "Rolling…";
+  statusOutput.textContent = "Rolling...";
 
   reels.forEach((reel, index) => {
     reel.classList.add("is-spinning");
@@ -359,3 +346,4 @@ function calculateWinningChance() {
 
   return total / 100;
 }
+

@@ -15,6 +15,6 @@
 
 /* For spin.html */
 .app {
-  padding-top: 8.3rem !important;
+  padding-top: 7.6rem !important;
   padding-bottom: calc(6rem + env(safe-area-inset-bottom, 0px)) !important;
 }
