@@ -44,10 +44,10 @@
         text-transform: uppercase;
       }
       .win-overlay[data-mode="lose"] .overlay-bg {
-        background: url("/images/failBackground.png") center/cover no-repeat;
+        background: url("./images/failBackground.png") center/cover no-repeat;
       }
       .win-overlay[data-mode="win"] .overlay-bg {
-        background: url("/images/winBackground.png") center/cover no-repeat;
+        background: url("./images/winBackground.png") center/cover no-repeat;
         opacity: 0.9；
       }
       .win-overlay[data-mode="win"] .overlay-text {
@@ -73,7 +73,7 @@
         top: clamp(-80px, -10vw, -30px);
         width: clamp(160px, 45vw, 520px);
         height: clamp(90px, 28vw, 260px);
-        background: url("/images/approved.png") center/contain no-repeat;
+        background: url("./images/approved.png") center/contain no-repeat;
         opacity: 0;
         transform: rotate(-0deg);
         transition: opacity 0.3s ease;
@@ -250,6 +250,6 @@
         }
       })();
     </script>
-    <script src="./src/spin-guard.js"></script>
+    <script type="module" src="./src/spin-guard.js"></script>
   </body>
   </html>
