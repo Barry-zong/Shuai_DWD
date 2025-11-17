@@ -51,7 +51,7 @@
   </head>
   <body class="crt">
     <div class="stage">
-      <img id="logo" alt="US Slot" src="/images/usSlotLogo.png" />
+      <img id="logo" alt="US Slot" src="./images/usSlotLogo.png" />
       <!-- <div id="fallback" hidden>US SLOT</div> -->
       <div class="hint">Click to Register</div>
     </div>
@@ -114,24 +114,14 @@
       }
       window.addEventListener('resize', clampToView);
 
-      function navigateTo(page){
-        const url = new URL(window.location.href);
-        const segments = url.pathname.split('/');
-        if (segments.length > 0){
-          segments[segments.length - 1] = page;
-          url.pathname = segments.join('/');
-        }
-        window.location.href = url.toString();
-      }
-
       // 点击或触摸进入登记页（不响应键盘事件）
-      const goRegister = () => { navigateTo('register.html'); };
+      const goRegister = () => { window.location.href = './register.html'; };
       ['pointerdown', 'touchstart', 'mousedown'].forEach(evt => {
         window.addEventListener(evt, goRegister, { once: true });
       });
 
       requestAnimationFrame(step);
     </script>
-    <script src="./src/spin-guard.js"></script>
+    <script type="module" src="./src/spin-guard.js"></script>
   </body>
   </html>
