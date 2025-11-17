@@ -23,7 +23,7 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: url("/images/LogoOutline.png") center 10%/ clamp(360px, 90vmin, 900px) no-repeat;
+        background: url("./images/LogoOutline.png") center 10%/ clamp(360px, 90vmin, 900px) no-repeat;
         opacity: 0.3;
         pointer-events: none;
         z-index: 0;
@@ -188,14 +188,14 @@
             // 如果是最后一个块，加载完成后跳转
             if (index === blocks.length - 1) {
               setTimeout(() => {
-                window.location.href = './spin.html';
+                window.location.href = 'spin.html';
               }, 500); // 最后一个块填充后等�?00ms再跳�?
             }
           }, index * 300); // 每个块间�?00ms
         });
       }
     </script>
-    <script src="./src/spin-guard.js"></script>
+    <script type="module" src="./src/spin-guard.js"></script>
   </body>
   </html>
 
