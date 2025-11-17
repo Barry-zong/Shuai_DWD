@@ -3,7 +3,12 @@
 
 /* For register.html, coins.html, result.html */
 .wrap {
-  padding-top: clamp(1vh, 18vh, 20vh) !important;
+  padding-top: clamp(1vh, 10vh, 20vh) !important;
+  padding-bottom: clamp(1vh, 10vh, 15vh) !important;
+}
+
+.wrapCoin {
+  padding-top: clamp(1vh, 35vh, 40vh) !important;
   padding-bottom: clamp(1vh, 10vh, 15vh) !important;
 }
 
@@ -18,7 +23,7 @@
 /* For confirm.html */
 .page {
   padding-top: 0vh !important;
-  padding-bottom: 6vh !important;
+  padding-bottom: 35vh !important;
 }
 
 /* For spin.html */

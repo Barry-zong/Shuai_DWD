@@ -94,7 +94,7 @@ body[data-coins-step="5"] { background: var(--bg-step-5); }
   color: var(--text);
   border-radius: 16px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
-  padding: clamp(18px, 4vw, 28px);
+  padding: clamp(18px, 10vw, 28px);
   text-align: center;
 }
 
