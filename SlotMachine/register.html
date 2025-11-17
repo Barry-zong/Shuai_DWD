@@ -108,7 +108,6 @@
       outline: none;
     }
 
-    .rail-wrap:hover .rail-hit,
     .rail-hit:focus-visible {
       opacity: 1;
     }
@@ -472,7 +471,11 @@
     rail.addEventListener('wheel', onWheel, { passive: false });
 
     const scrollRailByZone = (direction) => {
-      const step = Math.max(rail.clientWidth * 0.55, 180);
+      if (!items.length) return;
+      const style = window.getComputedStyle(rail);
+      const gap = parseFloat(style.columnGap || style.gap || '0') || 0;
+      const cardWidth = items[0]?.offsetWidth || 160;
+      const step = cardWidth + gap;
       rail.scrollBy({ left: step * direction, behavior: 'smooth' });
     };
 
