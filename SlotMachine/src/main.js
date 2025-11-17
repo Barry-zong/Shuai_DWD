@@ -244,6 +244,20 @@ const PI_HTTP_BASE =
 
 let piWS;
 let lastPiPressed = false;
+let wsProbeInFlight = false;
+let wsRetryTimer = null;
+
+function probePiAvailability() {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 1500);
+  return fetch(`${PI_HTTP_BASE}/api/state`, {
+    cache: "no-store",
+    signal: controller.signal,
+  })
+    .then((resp) => resp.ok)
+    .catch(() => false)
+    .finally(() => clearTimeout(timeoutId));
+}
 
 function handlePiState(state) {
   if (!state) return;
@@ -261,6 +275,14 @@ function handlePiState(state) {
   }
 }
 
+function schedulePiReconnect(delay = 1500) {
+  clearTimeout(wsRetryTimer);
+  wsRetryTimer = setTimeout(() => {
+    wsRetryTimer = null;
+    ensurePiWsConnection();
+  }, delay);
+}
+
 function connectPiWS() {
   try {
     piWS = new WebSocket(PI_WS_URL);
@@ -271,11 +293,23 @@ function connectPiWS() {
       } catch (_) {}
     };
     piWS.onclose = () => {
-      setTimeout(connectPiWS, 1000);
+      schedulePiReconnect(1000);
     };
   } catch (_) {
-    setTimeout(connectPiWS, 2000);
+    schedulePiReconnect(2000);
   }
+}
+
+async function ensurePiWsConnection() {
+  if (wsProbeInFlight) return;
+  wsProbeInFlight = true;
+  const available = await probePiAvailability();
+  wsProbeInFlight = false;
+  if (!available) {
+    schedulePiReconnect(4000);
+    return;
+  }
+  connectPiWS();
 }
 
 async function pollPi() {
@@ -289,7 +323,7 @@ async function pollPi() {
   } catch (_) {}
 }
 
-connectPiWS();
+ensurePiWsConnection();
 setInterval(pollPi, 1000);
 
 function getPlayerInfo() {

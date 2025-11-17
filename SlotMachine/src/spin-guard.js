@@ -3,6 +3,8 @@
   if (isSpinPage) return;
 
   const PI_WS_URL = window.PI_WS_URL || `ws://${location.hostname}:5000/ws`;
+  const PI_HTTP_BASE =
+    window.PI_HTTP_BASE || `http://${location.hostname}:5000`;
 
   const toast = document.createElement("div");
   toast.className = "spin-guard-toast";
@@ -46,6 +48,8 @@
 
   let ws;
   let lastPressed = false;
+  let connectProbeTimer = null;
+  let probeInFlight = false;
 
   function handleState(state) {
     if (!state || typeof state.pressed !== "boolean") return;
@@ -56,7 +60,37 @@
     lastPressed = pressed;
   }
 
-  function connect() {
+  function probeAvailability() {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+    return fetch(`${PI_HTTP_BASE}/api/state`, {
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then((resp) => resp.ok)
+      .catch(() => false)
+      .finally(() => clearTimeout(timeoutId));
+  }
+
+  function scheduleReconnect(delay = 1500) {
+    clearTimeout(connectProbeTimer);
+    connectProbeTimer = setTimeout(() => {
+      connectProbeTimer = null;
+      ensureWsConnection();
+    }, delay);
+  }
+
+  async function ensureWsConnection() {
+    if (probeInFlight) return;
+    probeInFlight = true;
+    const available = await probeAvailability();
+    probeInFlight = false;
+    if (!available) {
+      scheduleReconnect(4000);
+      return;
+    }
+
     try {
       ws = new WebSocket(PI_WS_URL);
       ws.onmessage = (event) => {
@@ -64,11 +98,11 @@
           handleState(JSON.parse(event.data));
         } catch (_) {}
       };
-      ws.onclose = () => setTimeout(connect, 1000);
+      ws.onclose = () => scheduleReconnect(1000);
     } catch (_) {
-      setTimeout(connect, 1500);
+      scheduleReconnect(1500);
     }
   }
 
-  connect();
+  ensureWsConnection();
 })();

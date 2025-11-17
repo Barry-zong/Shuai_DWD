@@ -117,15 +117,48 @@
       }
 
       // WebSocket connect + fallback polling
+      function probePiAvailability(){
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1500);
+        return fetch(`${PI_HTTP_BASE}/api/state`, {
+          cache: 'no-store',
+          signal: controller.signal
+        })
+          .then((resp) => resp.ok)
+          .catch(() => false)
+          .finally(() => clearTimeout(timeoutId));
+      }
+
       let ws;
-      function connect(){
+      let wsProbeInFlight = false;
+      let wsRetryTimer = null;
+
+      function scheduleWsReconnect(delay = 1500){
+        clearTimeout(wsRetryTimer);
+        wsRetryTimer = setTimeout(()=>{
+          wsRetryTimer = null;
+          ensureWsConnection();
+        }, delay);
+      }
+
+      async function ensureWsConnection(){
+        if (wsProbeInFlight) return;
+        wsProbeInFlight = true;
+        const available = await probePiAvailability();
+        wsProbeInFlight = false;
+        if (!available){
+          scheduleWsReconnect(4000);
+          return;
+        }
         try{
           ws = new WebSocket(PI_WS_URL);
           ws.onmessage = (e)=>{ try{ handleState(JSON.parse(e.data)); }catch(_){} };
-          ws.onclose = ()=> setTimeout(connect, 1000);
-        }catch(_){ setTimeout(connect, 1500); }
+          ws.onclose = ()=> scheduleWsReconnect(1000);
+        }catch(_){
+          scheduleWsReconnect(1500);
+        }
       }
-      connect();
+      ensureWsConnection();
       async function poll(){
         try{ const r = await fetch(`${PI_HTTP_BASE}/api/state`, {cache:'no-cache'}); if(r.ok){ handleState(await r.json()); } }catch(_){ }
       }
