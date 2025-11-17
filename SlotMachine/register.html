@@ -602,14 +602,14 @@
           localStorage.setItem('playerInfo', JSON.stringify({ ...prev, premiumProcessing: premium, ts: Date.now() }));
         } catch (_) { }
         if (premium.toLowerCase().startsWith('yes')) {
-          window.location.href = './coins.html';
+          window.location.href = 'coins.html';
         } else {
-          window.location.href = './confirm.html';
+          window.location.href = 'confirm.html';
         }
       }
     });
   </script>
-  <script src="./src/spin-guard.js"></script>
+  <script type="module" src="./src/spin-guard.js"></script>
 </body>
 
 </html>
