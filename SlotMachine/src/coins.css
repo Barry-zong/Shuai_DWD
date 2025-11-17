@@ -60,6 +60,11 @@ body[data-coins-step="5"] { background: var(--bg-step-5); }
   transform: translateX(-50%);
 }
 
+.money-rain .bill.bill-burst {
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
 @keyframes billFall {
   0% {
     transform: translate(-50%, -40vh) rotate(calc(var(--sway, 0deg) * -1));

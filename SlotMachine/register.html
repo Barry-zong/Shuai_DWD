@@ -251,6 +251,7 @@
   <!-- Anime.js for silky animations -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
   <script>
+    try { localStorage.setItem('premiumCoins', '0'); } catch (_) {}
     const rail = document.getElementById('rail');
     let items = [];
     let selGradTarget = null; // track which card has gradient animation

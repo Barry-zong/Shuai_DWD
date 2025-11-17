@@ -13,9 +13,9 @@
     <div class="wrapCoin">
       <div class="card">
         <h1 class="title">Premium Processing Payment</h1>
-        <p class="lead">You can start inserting coins now.</p>
+        <p class="lead">You can start inserting money by pressing SPACE.</p>
         <div class="count"><span id="coins" class="num">0</span></div>
-        <p class="hint" id="status">Waiting for coin pulses?</p>
+        <p class="hint" id="status">Waiting for $$$$</p>
         <div class="actions">
           <button class="btn" id="confirm">Confirm</button>
         </div>
@@ -31,6 +31,7 @@
       const btn = document.getElementById('confirm');
       const moneyRain = document.getElementById('moneyRain');
       let moneyRainActive = false;
+      let fullMoneyRainStarted = false;
 
       let coinCount = 0;
       try { coinCount = parseInt(localStorage.getItem('premiumCoins') || '0', 10) || 0; } catch (_) {}
@@ -39,14 +40,32 @@
       function updateBackground(){
         const step = Math.max(0, Math.min(5, coinCount));
         document.body.setAttribute('data-coins-step', String(step));
-        if (step >= 5) startMoneyRain();
       }
       updateBackground();
-      function startMoneyRain(){
-        if (moneyRainActive || !moneyRain) return;
+      function ensureMoneyRainActive(){
+        if (!moneyRain || moneyRainActive) return;
         moneyRainActive = true;
         moneyRain.classList.add('is-active');
-        const columns = Math.floor(20 + Math.random() * 10); // Dense money rain (20-30 bills)
+      }
+      function spawnBurstBills(count = 1){
+        if (!moneyRain || count <= 0) return;
+        ensureMoneyRainActive();
+        for (let i = 0; i < count; i++){
+          const bill = document.createElement('div');
+          bill.className = 'bill bill-burst';
+          bill.style.setProperty('--x', `${(Math.random() * 100).toFixed(2)}%`);
+          bill.style.setProperty('--delay', '0s');
+          bill.style.setProperty('--duration', `${(3 + Math.random() * 2.5).toFixed(2)}s`);
+          bill.style.setProperty('--sway', `${(Math.random() * 24 - 12).toFixed(2)}deg`);
+          bill.addEventListener('animationend', () => bill.remove());
+          moneyRain.appendChild(bill);
+        }
+      }
+      function startFullMoneyRain(){
+        if (!moneyRain || fullMoneyRainStarted) return;
+        fullMoneyRainStarted = true;
+        ensureMoneyRainActive();
+        const columns = Math.floor(20 + Math.random() * 10);
         for (let i = 0; i < columns; i++) {
           const bill = document.createElement('div');
           bill.className = 'bill';
@@ -58,6 +77,7 @@
           moneyRain.appendChild(bill);
         }
       }
+      if (coinCount >= 5) startFullMoneyRain();
 
       let lastCoin = false;
       let lastCoinTs = 0;
@@ -71,6 +91,11 @@
         try { localStorage.setItem('premiumCoins', String(coinCount)); } catch(_){ }
         lastCoinTs = now;
         updateBackground();
+        if (coinCount >= 5) {
+          startFullMoneyRain();
+        } else {
+          spawnBurstBills(1 + Math.floor(Math.random() * 3));
+        }
       }
       let hasReceivedCoin = false; // Track if any coin has been received
       function handleState(s){
