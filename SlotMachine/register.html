@@ -414,7 +414,14 @@
     rail.addEventListener('pointerup', endDrag);
     rail.addEventListener('pointercancel', endDrag);
 
-
+    const onWheel = (e) => {
+      if (e.deltaY === 0 && e.deltaX === 0) return;
+      e.preventDefault();
+      const delta = e.deltaY !== 0 ? e.deltaY : e.deltaX;
+      rail.scrollLeft += 2*delta;
+      dragMoved = true;
+    };
+    rail.addEventListener('wheel', onWheel, { passive: false });
 
 
     // Click to center (ignore if it was a drag)
