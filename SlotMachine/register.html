@@ -92,6 +92,35 @@
     .rail-wrap {
       position: relative;
       z-index: 2;
+      overflow: hidden;
+    }
+
+    .rail-hit {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: clamp(70px, 15vw, 280px);
+      cursor: pointer;
+      z-index: 3;
+      background: transparent;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      outline: none;
+    }
+
+    .rail-wrap:hover .rail-hit,
+    .rail-hit:focus-visible {
+      opacity: 1;
+    }
+
+    .rail-hit--left {
+      left: 0;
+      background: linear-gradient(90deg, rgba(12, 17, 30, 0.35), rgba(12, 17, 30, 0.1), transparent);
+    }
+
+    .rail-hit--right {
+      right: 0;
+      background: linear-gradient(-90deg, rgba(12, 17, 30, 0.35), rgba(12, 17, 30, 0.1), transparent);
     }
 
     /* 确保 rail 在上�?*/
@@ -125,6 +154,17 @@
 
     .rail::-webkit-scrollbar {
       display: none;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      border: 0;
     }
 
     .option {
@@ -240,7 +280,13 @@
       <p class="lead">This information may or may not affect your odds</p>
       <p class="question" id="q">Applicant's Education Level Survey</p>
       <div class="rail-wrap" aria-labelledby="q">
+        <div class="rail-hit rail-hit--left" role="button" tabindex="0" aria-label="Scroll options left">
+          <span class="sr-only">Scroll left</span>
+        </div>
         <div class="rail" id="rail" role="listbox" aria-label="Selection" tabindex="0"></div>
+        <div class="rail-hit rail-hit--right" role="button" tabindex="0" aria-label="Scroll options right">
+          <span class="sr-only">Scroll right</span>
+        </div>
       </div>
 
       <div class="actions">
@@ -253,6 +299,8 @@
   <script>
     try { localStorage.setItem('premiumCoins', '0'); } catch (_) {}
     const rail = document.getElementById('rail');
+    const hitLeft = document.querySelector('.rail-hit--left');
+    const hitRight = document.querySelector('.rail-hit--right');
     let items = [];
     let selGradTarget = null; // track which card has gradient animation
     const confirmBtn = document.getElementById('confirm');
@@ -418,11 +466,30 @@
       if (e.deltaY === 0 && e.deltaX === 0) return;
       e.preventDefault();
       const delta = e.deltaY !== 0 ? e.deltaY : e.deltaX;
-      rail.scrollLeft += 2*delta;
+      rail.scrollLeft += 2 * delta;
       dragMoved = true;
     };
     rail.addEventListener('wheel', onWheel, { passive: false });
 
+    const scrollRailByZone = (direction) => {
+      const step = Math.max(rail.clientWidth * 0.55, 180);
+      rail.scrollBy({ left: step * direction, behavior: 'smooth' });
+    };
+
+    function bindZone(el, direction) {
+      if (!el) return;
+      const trigger = () => scrollRailByZone(direction);
+      el.addEventListener('click', trigger);
+      el.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          trigger();
+        }
+      });
+    }
+
+    bindZone(hitLeft, -1);
+    bindZone(hitRight, 1);
 
     // Click to center (ignore if it was a drag)
     function bindItemClicks() {
