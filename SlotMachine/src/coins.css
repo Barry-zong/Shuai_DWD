@@ -50,7 +50,7 @@ body[data-coins-step="5"] { background: var(--bg-step-5); }
   left: var(--x, 50%);
   width: clamp(100px, 25vw, 180px);
   aspect-ratio: 1.62 / 1;
-  background-image: url("/images/moneyIcon.png");
+  background-image: url("./images/moneyIcon.png");
   background-size: contain;
   background-repeat: no-repeat;
   filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));

@@ -81,7 +81,6 @@ const DEFAULT_GLYPH = "$";
 
 const spinButton = document.getElementById("spin-button");
 const statusOutput = document.getElementById("status");
-const coinHint = document.getElementById("coin-hint");
 const spinHint = document.getElementById("spin-hint");
 const reels = [...document.querySelectorAll(".reel")];
 const glyphs = reels.map((reel) => reel.querySelector(".glyph"));
@@ -90,7 +89,6 @@ const baseSpinDuration = 2200;
 const reelDelay = 450;
 const tickInterval = 80;
 
-let canCoin = true;
 let isSpinning = false;
 let spinLocked = false;
 let intervalHandles = new Array(reels.length).fill(null);
@@ -208,11 +206,7 @@ function finalizeSpin() {
   syncSpinLockState();
 
   setTimeout(() => {
-    try {
-      window.location.href = "/result.html";
-    } catch (_) {
-      window.location.href = "./result.html";
-    }
+    window.location.href = "./result.html";
   }, 900);
 }
 
@@ -228,103 +222,6 @@ window.addEventListener("keydown", handleKeydown);
 
 reels.forEach((_, index) => setGlyph(index, DEFAULT_GLYPH));
 syncSpinLockState();
-
-const PI_WS_URL =
-  window.PI_WS_URL ||
-  (typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    import.meta.env.VITE_PI_WS_URL) ||
-  `ws://${location.hostname}:5000/ws`;
-const PI_HTTP_BASE =
-  window.PI_HTTP_BASE ||
-  (typeof import.meta !== "undefined" &&
-    import.meta.env &&
-    import.meta.env.VITE_PI_HTTP_BASE) ||
-  `http://${location.hostname}:5000`;
-
-let piWS;
-let lastPiPressed = false;
-let wsProbeInFlight = false;
-let wsRetryTimer = null;
-
-function probePiAvailability() {
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 1500);
-  return fetch(`${PI_HTTP_BASE}/api/state`, {
-    cache: "no-store",
-    signal: controller.signal,
-  })
-    .then((resp) => resp.ok)
-    .catch(() => false)
-    .finally(() => clearTimeout(timeoutId));
-}
-
-function handlePiState(state) {
-  if (!state) return;
-
-  if (typeof state.coin === "boolean" && state.coin && canCoin) {
-    if (coinHint) coinHint.textContent = "Coin detected";
-    canCoin = false;
-  }
-
-  if (typeof state.pressed === "boolean") {
-    if (state.pressed && !lastPiPressed) {
-      startSpin();
-    }
-    lastPiPressed = !!state.pressed;
-  }
-}
-
-function schedulePiReconnect(delay = 1500) {
-  clearTimeout(wsRetryTimer);
-  wsRetryTimer = setTimeout(() => {
-    wsRetryTimer = null;
-    ensurePiWsConnection();
-  }, delay);
-}
-
-function connectPiWS() {
-  try {
-    piWS = new WebSocket(PI_WS_URL);
-    piWS.onmessage = (e) => {
-      try {
-        const data = JSON.parse(e.data);
-        handlePiState(data);
-      } catch (_) {}
-    };
-    piWS.onclose = () => {
-      schedulePiReconnect(1000);
-    };
-  } catch (_) {
-    schedulePiReconnect(2000);
-  }
-}
-
-async function ensurePiWsConnection() {
-  if (wsProbeInFlight) return;
-  wsProbeInFlight = true;
-  const available = await probePiAvailability();
-  wsProbeInFlight = false;
-  if (!available) {
-    schedulePiReconnect(4000);
-    return;
-  }
-  connectPiWS();
-}
-
-async function pollPi() {
-  try {
-    const resp = await fetch(`${PI_HTTP_BASE}/api/state`, {
-      cache: "no-cache",
-    });
-    if (!resp.ok) return;
-    const data = await resp.json();
-    handlePiState(data);
-  } catch (_) {}
-}
-
-ensurePiWsConnection();
-setInterval(pollPi, 1000);
 
 function getPlayerInfo() {
   try {
