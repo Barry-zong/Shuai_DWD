@@ -114,8 +114,18 @@
       }
       window.addEventListener('resize', clampToView);
 
-      // 点击或触摸进入登记页（不响应键盘）
-      const goRegister = () => { window.location.href = './register.html'; };
+      function navigateTo(page){
+        const url = new URL(window.location.href);
+        const segments = url.pathname.split('/');
+        if (segments.length > 0){
+          segments[segments.length - 1] = page;
+          url.pathname = segments.join('/');
+        }
+        window.location.href = url.toString();
+      }
+
+      // 点击或触摸进入登记页（不响应键盘事件）
+      const goRegister = () => { navigateTo('register.html'); };
       ['pointerdown', 'touchstart', 'mousedown'].forEach(evt => {
         window.addEventListener(evt, goRegister, { once: true });
       });
