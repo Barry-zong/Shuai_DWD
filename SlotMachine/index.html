@@ -4,7 +4,6 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Redirecting to screensaver…</title>
-    <meta http-equiv="refresh" content="0; url=./screensaver.html" />
     <link rel="stylesheet" href="./src/crt.css" />
     <link rel="canonical" href="./screensaver.html" />
     <style>
@@ -15,10 +14,23 @@
   <body class="crt">
     <p>Redirecting to <a href="./screensaver.html">screensaver</a>…</p>
     <script>
+      // Avoid a meta-refresh loop if a server mistakenly rewrites /screensaver.html
+      // back to index.html. Only redirect when we're on the landing page.
+      const toScreensaver = () => {
+        if (/(^|\/)screensaver\.html$/i.test(window.location.pathname)) {
+          return; // Already on the target path; don't keep redirecting.
+        }
+        window.location.replace('./screensaver.html');
+      };
+
       try {
         localStorage.removeItem('spinLocked');
         localStorage.removeItem('spinWinChance');
       } catch (_) {}
+
+      // Use JS-driven redirect (instead of meta refresh) to prevent infinite refresh
+      // loops when the server falls back to index.html for unknown routes.
+      setTimeout(toScreensaver, 0);
     </script>
     <script type="module" src="./src/spin-guard.js"></script>
   </body>
