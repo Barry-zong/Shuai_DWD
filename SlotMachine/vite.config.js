@@ -3,6 +3,9 @@ import { resolve } from 'path';
 
 export default defineConfig({
   base: './',
+  // Disable SPA fallback so every HTML entry resolves directly without looping
+  // back to index.html during dev/preview
+  appType: 'mpa',
   build: {
     rollupOptions: {
       input: {
