@@ -1,4 +1,7 @@
-﻿const OUTCOME_DEFINITIONS = [
+// Import matrix rain effect
+import './matrix-rain.js';
+
+const OUTCOME_DEFINITIONS = [
   {
     code: "H1B",
     full: "H-1B Specialty Occupation Visa",

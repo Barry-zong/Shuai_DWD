@@ -1,8 +1,8 @@
 // Matrix Rain Effect using H1B outcome codes
-(function() {
-  const canvas = document.getElementById('matrix-rain');
-  if (!canvas) return;
+// ES Module - automatically executed when imported
 
+const canvas = document.getElementById('matrix-rain');
+if (canvas) {
   const ctx = canvas.getContext('2d');
 
   // Set canvas size
@@ -31,13 +31,13 @@
   }
 
   function draw() {
-    // Semi-transparent black to create fade effect
-    ctx.fillStyle = 'rgba(37, 60, 97, 0.16)'; // Slightly stronger fade to prevent heavy overlap
+    // Semi-transparent dark to create fade effect
+    ctx.fillStyle = 'rgba(37, 60, 97, 0.16)'; // Darker fade for better contrast
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    // Matrix rain color - light blue/cyan to match theme
+    // Matrix rain color - brighter cyan/blue for better visibility
     ctx.fillStyle = '#7ab3ff';
-    ctx.font = fontSize + 'px "JetBrains Mono", monospace';
+    ctx.font = fontSize + `px "JetBrains Mono", monospace`;
 
     for (let i = 0; i < drops.length; i++) {
       const code = columnCodes[i];
@@ -60,4 +60,4 @@
 
   // Animate at ~30 FPS for smooth performance
   setInterval(draw, 33);
-})();
+}
