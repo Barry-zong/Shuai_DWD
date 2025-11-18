@@ -208,11 +208,7 @@ function finalizeSpin() {
   syncSpinLockState();
 
   setTimeout(() => {
-    try {
-      window.location.href = "/result.html";
-    } catch (_) {
-      window.location.href = "./result.html";
-    }
+    window.location.href = "./result.html";
   }, 900);
 }
 
