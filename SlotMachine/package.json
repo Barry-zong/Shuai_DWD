@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --open /screensaver.html",
+    "dev": "vite --open screensaver.html",
     "build": "vite build",
     "preview": "vite preview",
     "start": "node src/serve.js"

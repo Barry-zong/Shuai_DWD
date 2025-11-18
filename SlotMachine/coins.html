@@ -22,10 +22,6 @@
       </div>
     </div>
     <script>
-      // Reuse endpoints; avoid import.meta in classic scripts (causes SyntaxError)
-      const PI_WS_URL = window.PI_WS_URL || `ws://${location.hostname}:5000/ws`;
-      const PI_HTTP_BASE = window.PI_HTTP_BASE || `http://${location.hostname}:5000`;
-
       const elCoins = document.getElementById('coins');
       const elStatus = document.getElementById('status');
       const btn = document.getElementById('confirm');
@@ -79,9 +75,7 @@
       }
       if (coinCount >= 5) startFullMoneyRain();
 
-      let lastCoin = false;
       let lastCoinTs = 0;
-      let sawExternal = false; // becomes true once any WS/HTTP state received
 
       function addCoinPulse(){
         const now = Date.now();
@@ -97,79 +91,12 @@
           spawnBurstBills(1 + Math.floor(Math.random() * 3));
         }
       }
-      let hasReceivedCoin = false; // Track if any coin has been received
-      function handleState(s){
-        if (!s) return;
-        sawExternal = true;
-        if (typeof s.coin === 'boolean'){
-          if (s.coin && !lastCoin) {
-            addCoinPulse();
-            hasReceivedCoin = true; // Mark that we've received at least one coin
-          }
-          lastCoin = !!s.coin;
-          // Update status text based on whether coins have been received
-          if (hasReceivedCoin) {
-            elStatus.textContent = 'Payment received. Probability upgraded';
-          } else {
-            elStatus.textContent = 'Waiting for coin pulses';
-          }
-        }
-      }
 
-      // WebSocket connect + fallback polling
-      function probePiAvailability(){
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1500);
-        return fetch(`${PI_HTTP_BASE}/api/state`, {
-          cache: 'no-store',
-          signal: controller.signal
-        })
-          .then((resp) => resp.ok)
-          .catch(() => false)
-          .finally(() => clearTimeout(timeoutId));
-      }
-
-      let ws;
-      let wsProbeInFlight = false;
-      let wsRetryTimer = null;
-
-      function scheduleWsReconnect(delay = 1500){
-        clearTimeout(wsRetryTimer);
-        wsRetryTimer = setTimeout(()=>{
-          wsRetryTimer = null;
-          ensureWsConnection();
-        }, delay);
-      }
-
-      async function ensureWsConnection(){
-        if (wsProbeInFlight) return;
-        wsProbeInFlight = true;
-        const available = await probePiAvailability();
-        wsProbeInFlight = false;
-        if (!available){
-          scheduleWsReconnect(4000);
-          return;
-        }
-        try{
-          ws = new WebSocket(PI_WS_URL);
-          ws.onmessage = (e)=>{ try{ handleState(JSON.parse(e.data)); }catch(_){} };
-          ws.onclose = ()=> scheduleWsReconnect(1000);
-        }catch(_){
-          scheduleWsReconnect(1500);
-        }
-      }
-      ensureWsConnection();
-      async function poll(){
-        try{ const r = await fetch(`${PI_HTTP_BASE}/api/state`, {cache:'no-cache'}); if(r.ok){ handleState(await r.json()); } }catch(_){ }
-      }
-      setInterval(poll, 1000);
-
-      // For testing: if no WS/HTTP state yet, Space adds a coin pulse
       window.addEventListener('keydown', (e) => {
-        if (e.code === 'Space' && !sawExternal) {
+        if (e.code === 'Space') {
           e.preventDefault();
           addCoinPulse();
-          elStatus.textContent = 'Simulated coin via Space';
+          elStatus.textContent = 'Payment received. Probability upgraded';
         }
       });
 
@@ -181,6 +108,6 @@
         window.location.href = './confirm.html';
       });
     </script>
-    <script src="./src/spin-guard.js"></script>
+  <script type="module" src="./src/spin-guard.js"></script>
   </body>
   </html>
